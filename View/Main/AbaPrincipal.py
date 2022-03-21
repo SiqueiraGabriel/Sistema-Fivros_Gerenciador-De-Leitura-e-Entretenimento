@@ -49,10 +49,10 @@ def criacaoAbas(aba, nome, titulo):
 
 
 def addTreView(fr_Conteudo, colunaAutor):
-    tv = ttk.Treeview(fr_Conteudo, columns=('id','nome','autor', 'genero', 'status'), show="headings")
+    tv = ttk.Treeview(fr_Conteudo, columns=('id','nome','autor','genero', 'status'), show="headings")
     tv.column('id', minwidth=25, width=50)
     tv.column('nome', minwidth=150, width=550)
-    tv.column('autor', minwidth=50, width=200)
+    tv.column('autor', minwidth=50, width=160)
     tv.column('genero', minwidth=50, width=150)
     tv.column('status', minwidth=25, width=80)
     tv.heading('id', text="ID")

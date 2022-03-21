@@ -65,3 +65,4 @@ class Usuario:
 
 user = Usuario()
 user.createViewCadastro()
+#user.createViewLogar()

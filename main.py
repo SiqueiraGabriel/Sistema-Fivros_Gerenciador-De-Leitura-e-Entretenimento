@@ -13,6 +13,7 @@ height = app.winfo_screenheight()
 app.geometry(f"{width}x{height}")
 app.configure(background="#ddd")
 # --------------------------------------------------------------------------
+
 View.Main.Menu.criarMenu(app) #Adição menu
 View.Main.AbaPrincipal.criar(app)
 
