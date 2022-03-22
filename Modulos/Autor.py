@@ -1,4 +1,2 @@
 from tkinter import *
 
-
-

@@ -3,12 +3,17 @@ from tkinter import *
 
 class Usuario:
 
-    def createViewLogar(self):
-        appLogin = Tk()
+    def __init__(self):
+        print()
+
+    def createViewLogar(self, app):
+        appLogin = Toplevel()
         appLogin.title("Login de Usuários")
         appLogin.configure(background="#ddd")
         appLogin.geometry("300x200")
         appLogin.resizable(0, 0)
+        appLogin.transient(app)
+
         fr_Login = Frame(appLogin, borderwidth=1, relief="ridge")
         lblTitulo = Label(fr_Login, text="LOGIN DE USUÁRIO", font=("Arial", 14), anchor="center")
         lblUser = Label(fr_Login, text="Usuário: ")
@@ -26,14 +31,14 @@ class Usuario:
 
         fr_Login.place(y=10, x=10, width=280, height=180)
 
-        appLogin.mainloop()
 
-    def createViewCadastro(self):
-        appCadastroUser = Tk()
+    def createViewCadastro(self, app):
+        appCadastroUser = Toplevel()
         appCadastroUser.title("Cadastro de Usuário")
         appCadastroUser.configure(background="#ddd")
         appCadastroUser.geometry("400x260")
         appCadastroUser.resizable(0,0)
+        appCadastroUser.transient(app)
 
         fr_CadastroUser = Frame(appCadastroUser, borderwidth=1, relief="raised")
 
@@ -60,9 +65,4 @@ class Usuario:
         btnCadastrar.place(x=20, y=180, width=340, height=40)
         fr_CadastroUser.place(x=10, y=10, width=380, height=240)
 
-        appCadastroUser.mainloop()
 
-
-user = Usuario()
-user.createViewCadastro()
-#user.createViewLogar()

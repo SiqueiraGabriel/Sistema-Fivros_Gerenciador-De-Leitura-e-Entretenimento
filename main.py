@@ -1,6 +1,6 @@
-import View.Main.AbaPrincipal, View.Main.Menu
-from tkinter import *
-import os.path
+from Modulos.Bibliotecas import *
+from Modulos.Categoria import Categoria
+from Modulos.TelaPrincipal import *
 
 caminho = os.path.dirname(__file__)
 
@@ -14,8 +14,9 @@ app.geometry(f"{width}x{height}")
 app.configure(background="#ddd")
 # --------------------------------------------------------------------------
 
-View.Main.Menu.criarMenu(app) #Adição menu
-View.Main.AbaPrincipal.criar(app)
+criarMenu(app)
+TelaPrincipal().criar(app)
+Categoria().createViewCadastro(app)
 
 
 # --------------------------------------------------------------------------
