@@ -16,7 +16,6 @@ app.configure(background="#ddd")
 
 criarMenu(app)
 TelaPrincipal().criar(app)
-Categoria().createViewCadastro(app)
 
 
 # --------------------------------------------------------------------------
