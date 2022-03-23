@@ -19,7 +19,9 @@ class TelaPrincipal:
 
 
     def addFrames(self, aba):
-        #Criação dos Frames
+        #Criação dos Frames - utilizando um dicionário
+
+
         frameLivro = self.criacaoAbas(aba, "Livros", "MEUS LIVROS")
         #frameFilme = self.criacaoAbas(aba, "Filmes", "MEUS FILMES")
         #frameSerie = self.criacaoAbas(aba, "Séries", "MINHAS SÉRIES")
@@ -119,6 +121,10 @@ class TelaPrincipal:
 
 
     def addMenuLateral(self, fr_Menu):
+        caminho = os.path.dirname(__file__)
+
+
+
         btnAdicionar = Button(fr_Menu, text="Adicionar", command=self.semAcao)
         btnAlterar = Button(fr_Menu, text="Alterar", command=self.semAcao)
         btnExcluir = Button(fr_Menu, text="Excluir ", command=self.semAcao)
