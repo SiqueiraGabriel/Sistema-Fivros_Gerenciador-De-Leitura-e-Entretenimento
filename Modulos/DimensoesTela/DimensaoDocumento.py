@@ -40,9 +40,9 @@ def DimeElementFrameDocumento(lblTitulo, txtTitulo,lblAnoPublicacao, txtAnoPubli
 
 
 def DimeElementFrameCategoria(fr_TipoCategoria, lblItens, lb_Itens, barraLateral, fr_NovaCategoria, lblNome, txtNome, lblResponsavel, fr_ResponsavelButton, rb_escritor, rb_diretor, btnAdicionar):
-    fr_TipoCategoria.place(x=10, y=30, width=430, height=100)
+    fr_TipoCategoria.place(x=10, y=30, width=430, height=150)
     lblItens.place(x=0, y=0, width=430, height=20)
-    lb_Itens.place(x=0, y=20, width=410, height=120)
+    lb_Itens.place(x=0, y=20, width=410, height=140)
     barraLateral.pack(side=RIGHT, pady=20, fill=Y)
 
     fr_NovaCategoria.place(x=10, y=210, width=430, height=200)
@@ -56,9 +56,9 @@ def DimeElementFrameCategoria(fr_TipoCategoria, lblItens, lb_Itens, barraLateral
     btnAdicionar.place(x=20, y=150, width=380, height=30)
 
 def DimeElementFrameGenero(fr_TipoGenero, lblItens, lbItens, barraLateral, fr_NovoGenero, lblNome, txtNome, btnAdicionar):
-    fr_TipoGenero.place(x=10, y=30, width=430, height=110)
+    fr_TipoGenero.place(x=10, y=30, width=430, height=150)
     lblItens.place(x=0, y=0, width=430, height=20)
-    lbItens.place(x=0, y=20, width=410, height=120)
+    lbItens.place(x=0, y=20, width=410, height=140)
     barraLateral.pack(side=RIGHT, fill=Y, pady=20)
 
     fr_NovoGenero.place(x=10, y=210, width=430, height=110)

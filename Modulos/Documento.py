@@ -1,6 +1,9 @@
 from tkinter import *
 from tkinter import ttk
 from Modulos.DimensoesTela.DimensaoDocumento import *
+from Modulos.Categoria  import *
+from Modulos.Genero import Genero
+
 
 class Documento:
 
@@ -113,10 +116,14 @@ class Documento:
         rb_escritor = Radiobutton(fr_ResponsavelButton, text="Escritor", value="ESCRITOR", variable=val_responsavel)
         rb_diretor = Radiobutton(fr_ResponsavelButton, text="Diretor", value="DIRETOR", variable=val_responsavel)
 
-        btnAdicionar = Button(fr_NovaCategoria, text="Adicionar Nova Categoria")
+        btnAdicionar = Button(fr_NovaCategoria, text="Adicionar Nova Categoria", command=lambda:Categoria().createNewCategoria(txtNome.get(), val_responsavel.get(), self.lb_Itens))
 
         #Configurar dimensões do Frame Categoria
         DimeElementFrameCategoria(fr_TipoCategoria, lblItens, self.lb_Itens, barraLateral, fr_NovaCategoria, lblNome, txtNome, lblResponsavel, fr_ResponsavelButton, rb_escritor, rb_diretor, btnAdicionar)
+
+        #Adicionar as opções no ListBox da Categoria
+        cat = Categoria()
+        cat.addElementListBoxCadastroDoc(self.lb_Itens)
 
 
     def addElementFrameGenero(self):
@@ -126,20 +133,24 @@ class Documento:
         lblItens = Label(fr_TipoGenero, text="Gênero", anchor="w", background="#635959", font=("Arial", 10),
                          foreground="#f6f6f6")
         barraLateral = Scrollbar(fr_TipoGenero)
-        lbItens = Listbox(fr_TipoGenero, yscrollcommand=barraLateral.set)
+        lbItens = Listbox(fr_TipoGenero, yscrollcommand=barraLateral.set, selectmode="multiple")
 
         # Frame para criação de novo gênero
         fr_NovoGenero = Frame(self.fr_Genero, background="#D1CDCD")
         lblNome = Label(fr_NovoGenero, text="Novo Gênero", anchor="w", background="#635959", font=("Arial", 10),
                         foreground="#f6f6f6")
         txtNome = Entry(fr_NovoGenero, relief="raised", borderwidth=1)
-        btnAdicionar = Button(fr_NovoGenero, text="Adicionar Novo Gênero")
+        btnAdicionar = Button(fr_NovoGenero, text="Adicionar Novo Gênero", command=lambda:Genero().createNewGenero(txtNome.get(), lbItens))
 
         #Configurar dimensões da frame Genero
         DimeElementFrameGenero(fr_TipoGenero, lblItens, lbItens, barraLateral, fr_NovoGenero, lblNome, txtNome, btnAdicionar)
 
         # Configurar Barra Lateral
         barraLateral.config(command=lbItens.yview)
+
+        #Adicionar as opções no ListBox do Genero
+        genero = Genero()
+        genero.addElementsListBoxGenero(lbItens)
 
     def addElementAutor(self):
         fr_TipoAutor = Frame(self.fr_Autor, relief="raised", borderwidth=1)
