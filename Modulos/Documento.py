@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import ttk
+from datetime import date
+from Modulos.Autor import Autor
 from Modulos.DimensoesTela.DimensaoDocumento import *
 from Modulos.Categoria  import *
 from Modulos.Genero import Genero
@@ -153,6 +155,7 @@ class Documento:
         genero.addElementsListBoxGenero(lbItens)
 
     def addElementAutor(self):
+        anoAtual = date.today().year
         fr_TipoAutor = Frame(self.fr_Autor, relief="raised", borderwidth=1)
         lblAutor = Label(fr_TipoAutor, text="Nome dos Responsáveis (Escritor ou Diretor)", anchor="w", background="#635959", font=("Arial", 10),
                         foreground="#f6f6f6")
@@ -171,17 +174,20 @@ class Documento:
         barraLateral2 = Scrollbar(fr_Biografia)
         lblBiografia = Label(fr_Biografia, text="Biografia", anchor="w", background="#635959", font=("Arial", 10),
                         foreground="#f6f6f6")
-        txtBiografia = Text(fr_Biografia, borderwidth=1, relief="raised", yscrollcommand=barraLateral2.set)
-        lblNascimento = Label(fr_NovoAutor, text="Data Nascimento", anchor="w", background="#635959", font=("Arial", 10),
+        txtBiografia = Text(fr_Biografia, borderwidth=1, relief="raised", yscrollcommand=barraLateral2.set, wrap=WORD)
+        lblNascimento = Label(fr_NovoAutor, text="Ano de Nascimento", anchor="w", background="#635959", font=("Arial", 10),
                               foreground="#f6f6f6")
-        txtNascimento = Entry(fr_NovoAutor, relief="raised")
-        lblFalescimento = Label(fr_NovoAutor, text="Data Falescimento", anchor="w", background="#635959", font=("Arial", 10),
+        txtNascimento = Spinbox(fr_NovoAutor, relief="raised", from_=-2000, to=anoAtual)
+        lblFalescimento = Label(fr_NovoAutor, text="Ano de Falescimento", anchor="w", background="#635959", font=("Arial", 10),
                            foreground="#f6f6f6")
-        txtFalescimento = Entry(fr_NovoAutor, relief="raised")
+        txtFalescimento = Spinbox(fr_NovoAutor, relief="raised", from_=-2000, to=anoAtual)
 
 
-        btnAdicionar = Button(fr_NovoAutor, text="Adicionar Novo Responsável" )
+        btnAdicionar = Button(fr_NovoAutor, text="Adicionar Novo Responsável", command=lambda:Autor().createNewAutor(txtNomeAutor.get(), txtBiografia.get(1.0, END), txtNascimento.get(), txtFalescimento.get(), txtPaisOrigem.get(), lb_Autor) )
 
+        # Adicionar as opções no ListBox da Categoria
+        autor = Autor()
+        autor.addElementListBoxAutor(lb_Autor)
 
         #Configuração Barra Lateral
         barraLateral.config(command=lb_Autor.yview)
@@ -189,7 +195,6 @@ class Documento:
 
         #Configuração de Dimensões
         DimeElementFrameAutor(self.fr_Autor, btnAdicionar,fr_TipoAutor, lblAutor, lb_Autor, barraLateral, barraLateral2, fr_NovoAutor, fr_Biografia, lblNome, txtNomeAutor, lblPaisOrigem, txtPaisOrigem, lblNascimento, txtNascimento, lblFalescimento, txtFalescimento, lblBiografia, txtBiografia)
-
 
 
     def addElementStatus(self):

@@ -24,6 +24,7 @@ class Categoria:
         """
         Este método é responsável por preencher os valores da ListBox de categoria da Tela de Cadastro
         """
+        listbox.delete(0, END)
         valores = self.returnItensCategoria()
         for item in valores:
             listbox.insert(END, item[1])

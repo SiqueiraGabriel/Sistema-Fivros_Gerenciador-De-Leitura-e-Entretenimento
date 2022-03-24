@@ -21,6 +21,7 @@ class Genero:
         :param lbItens:
         :return:
         """
+        lbItens.delete(0, END)
         valores = self.returnItensGenero()
         for item in valores:
             lbItens.insert(END, item[1])
