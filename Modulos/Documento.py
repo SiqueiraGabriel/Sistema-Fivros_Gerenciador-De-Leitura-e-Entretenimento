@@ -1,21 +1,24 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from datetime import date
 from Modulos.Autor import Autor
 from Modulos.DimensoesTela.DimensaoDocumento import *
 from Modulos.Categoria  import *
 from Modulos.Genero import Genero
+from Modulos.Calendario import *
 
 
 class Documento:
 
     def __init__(self):
-        print()
+        self.anoAtual = date.today().year
 
 
-    def createViewDocumento(self, titulo="Conteúdo", idCategoria=0, app=None):
+
+    def createViewDocumento(self, titulo="Conteúdo", idCategoria=0, app=None, idUsuario=0):
         #Criação da tela de cadastro
         self.createTelaCadastro(app)
+        self.idUsuario = idUsuario
 
         #Criação do Frame Principal
         self.fr_Principal = Frame(self.appCadastroDoc, borderwidth=1, relief="raised")
@@ -65,8 +68,8 @@ class Documento:
     def createAllAbas(self):
         self.aba.add(self.fr_Documento, text="Obra")
         self.aba.add(self.fr_Categoria, text="Categoria")
-        self.aba.add(self.fr_Genero, text="Gênero")
         self.aba.add(self.fr_Autor, text="Autor")
+        self.aba.add(self.fr_Genero, text="Gênero")
         self.aba.add(self.fr_Status, text="Finalização")
 
     def addElementFramePrincipal(self, titulo):
@@ -79,7 +82,7 @@ class Documento:
         self.lblTitulo = Label(self.fr_Documento, text="Nome da Obra: ", anchor="w", background="#635959", foreground="#fff")
         self.txtTitulo = Entry(self.fr_Documento , borderwidth=1, relief="raised")
         self.lblAnoPublicacao = Label(self.fr_Documento, text="Ano de Publicação: ", anchor="w", background="#635959", foreground="#fff")
-        self.txtAnoPublicacao = Entry(self.fr_Documento, borderwidth=1, relief="raised")
+        self.txtAnoPublicacao = Spinbox(self.fr_Documento, from_=-3000, to=self.anoAtual, borderwidth=1, relief="raised")
         self.fr_Descricao = Frame(self.fr_Documento, relief="raised", borderwidth=1, )
         self.lblDescricao = Label(self.fr_Descricao, text="Sinopse da obra: ", anchor="w", background="#635959", foreground="#fff")
         self.barraLateral1 = Scrollbar(self.fr_Descricao)
@@ -99,10 +102,10 @@ class Documento:
         fr_TipoCategoria = Frame(self.fr_Categoria, relief="raised", borderwidth=1)
         barraLateral = Scrollbar(fr_TipoCategoria)
         lblItens = Label(fr_TipoCategoria, text="Categoria", anchor="w", background="#635959",font=("Arial", 10), foreground="#f6f6f6")
-        self.lb_Itens = Listbox(fr_TipoCategoria, yscrollcommand=barraLateral.set, relief="raised", borderwidth=1)
+        self.lb_ItensCategoria = Listbox(fr_TipoCategoria, yscrollcommand=barraLateral.set, relief="raised", borderwidth=1)
 
         #Configurar barra lateral
-        barraLateral.config(command=self.lb_Itens.yview)
+        barraLateral.config(command=self.lb_ItensCategoria.yview)
 
         #Frame para informar nova categoria
         fr_NovaCategoria = Frame(self.fr_Categoria, background="#D1CDCD")
@@ -113,6 +116,8 @@ class Documento:
         txtNome = Entry(fr_NovaCategoria, relief="raised", borderwidth=1)
         lblResponsavel = Label(fr_NovaCategoria, text="Indíviduo Responsável", anchor="w", background="#635959",font=("Arial", 10), foreground="#f6f6f6")
 
+
+
         #Frame secundário de Nova Categoria - Radio Button
         fr_ResponsavelButton = Frame(fr_NovaCategoria, relief="raised", borderwidth=1)
         rb_escritor = Radiobutton(fr_ResponsavelButton, text="Escritor", value="ESCRITOR", variable=val_responsavel)
@@ -121,11 +126,11 @@ class Documento:
         btnAdicionar = Button(fr_NovaCategoria, text="Adicionar Nova Categoria", command=lambda:Categoria().createNewCategoria(txtNome.get(), val_responsavel.get(), self.lb_Itens))
 
         #Configurar dimensões do Frame Categoria
-        DimeElementFrameCategoria(fr_TipoCategoria, lblItens, self.lb_Itens, barraLateral, fr_NovaCategoria, lblNome, txtNome, lblResponsavel, fr_ResponsavelButton, rb_escritor, rb_diretor, btnAdicionar)
+        DimeElementFrameCategoria(fr_TipoCategoria, lblItens, self.lb_ItensCategoria, barraLateral, fr_NovaCategoria, lblNome, txtNome, lblResponsavel, fr_ResponsavelButton, rb_escritor, rb_diretor, btnAdicionar)
 
         #Adicionar as opções no ListBox da Categoria
         cat = Categoria()
-        cat.addElementListBoxCadastroDoc(self.lb_Itens)
+        cat.addElementListBoxCadastroDoc(self.lb_ItensCategoria)
 
 
     def addElementFrameGenero(self):
@@ -135,32 +140,31 @@ class Documento:
         lblItens = Label(fr_TipoGenero, text="Gênero", anchor="w", background="#635959", font=("Arial", 10),
                          foreground="#f6f6f6")
         barraLateral = Scrollbar(fr_TipoGenero)
-        lbItens = Listbox(fr_TipoGenero, yscrollcommand=barraLateral.set, selectmode="multiple")
+        self.lbItensGenero = Listbox(fr_TipoGenero, yscrollcommand=barraLateral.set, selectmode="multiple")
 
         # Frame para criação de novo gênero
         fr_NovoGenero = Frame(self.fr_Genero, background="#D1CDCD")
         lblNome = Label(fr_NovoGenero, text="Novo Gênero", anchor="w", background="#635959", font=("Arial", 10),
                         foreground="#f6f6f6")
         txtNome = Entry(fr_NovoGenero, relief="raised", borderwidth=1)
-        btnAdicionar = Button(fr_NovoGenero, text="Adicionar Novo Gênero", command=lambda:Genero().createNewGenero(txtNome.get(), lbItens))
+        btnAdicionar = Button(fr_NovoGenero, text="Adicionar Novo Gênero", command=lambda:Genero().createNewGenero(txtNome.get(), self.lbItensGenero))
 
         #Configurar dimensões da frame Genero
-        DimeElementFrameGenero(fr_TipoGenero, lblItens, lbItens, barraLateral, fr_NovoGenero, lblNome, txtNome, btnAdicionar)
+        DimeElementFrameGenero(fr_TipoGenero, lblItens, self.lbItensGenero, barraLateral, fr_NovoGenero, lblNome, txtNome, btnAdicionar)
 
         # Configurar Barra Lateral
-        barraLateral.config(command=lbItens.yview)
+        barraLateral.config(command=self.lbItensGenero.yview)
 
         #Adicionar as opções no ListBox do Genero
         genero = Genero()
-        genero.addElementsListBoxGenero(lbItens)
+        genero.addElementsListBoxGenero(self.lbItensGenero)
 
     def addElementAutor(self):
-        anoAtual = date.today().year
         fr_TipoAutor = Frame(self.fr_Autor, relief="raised", borderwidth=1)
-        lblAutor = Label(fr_TipoAutor, text="Nome dos Responsáveis (Escritor ou Diretor)", anchor="w", background="#635959", font=("Arial", 10),
+        lblAutor = Label(fr_TipoAutor, text="Nome do principal Responsável (Escritor ou Diretor)", anchor="w", background="#635959", font=("Arial", 10),
                         foreground="#f6f6f6")
         barraLateral = Scrollbar(fr_TipoAutor)
-        lb_Autor = Listbox(fr_TipoAutor, selectmode="multiple", yscrollcommand=barraLateral.set, borderwidth=1, relief="raised")
+        self.lb_Autor = Listbox(fr_TipoAutor, yscrollcommand=barraLateral.set, borderwidth=1, relief="raised")
 
         fr_NovoAutor = Frame(self.fr_Autor, background="#D1CDCD")
         lblNome = Label(fr_NovoAutor, text="Nome Novo Autor", anchor="w", background="#635959", font=("Arial", 10),
@@ -177,61 +181,96 @@ class Documento:
         txtBiografia = Text(fr_Biografia, borderwidth=1, relief="raised", yscrollcommand=barraLateral2.set, wrap=WORD)
         lblNascimento = Label(fr_NovoAutor, text="Ano de Nascimento", anchor="w", background="#635959", font=("Arial", 10),
                               foreground="#f6f6f6")
-        txtNascimento = Spinbox(fr_NovoAutor, relief="raised", from_=-2000, to=anoAtual)
+        txtNascimento = Spinbox(fr_NovoAutor, relief="raised", from_=-2000, to=self.anoAtual)
         lblFalescimento = Label(fr_NovoAutor, text="Ano de Falescimento", anchor="w", background="#635959", font=("Arial", 10),
                            foreground="#f6f6f6")
-        txtFalescimento = Spinbox(fr_NovoAutor, relief="raised", from_=-2000, to=anoAtual)
+        txtFalescimento = Spinbox(fr_NovoAutor, relief="raised", from_=-2000, to=self.anoAtual)
 
 
-        btnAdicionar = Button(fr_NovoAutor, text="Adicionar Novo Responsável", command=lambda:Autor().createNewAutor(txtNomeAutor.get(), txtBiografia.get(1.0, END), txtNascimento.get(), txtFalescimento.get(), txtPaisOrigem.get(), lb_Autor) )
+        btnAdicionar = Button(fr_NovoAutor, text="Adicionar Novo Responsável", command=lambda:Autor().createNewAutor(txtNomeAutor.get(), txtBiografia.get(1.0, END), txtNascimento.get(), txtFalescimento.get(), txtPaisOrigem.get(), self.lb_Autor) )
 
         # Adicionar as opções no ListBox da Categoria
         autor = Autor()
-        autor.addElementListBoxAutor(lb_Autor)
+        autor.addElementListBoxAutor(self.lb_Autor)
 
         #Configuração Barra Lateral
-        barraLateral.config(command=lb_Autor.yview)
+        barraLateral.config(command=self.lb_Autor.yview)
         barraLateral2.config(command=txtBiografia.yview)
 
         #Configuração de Dimensões
-        DimeElementFrameAutor(self.fr_Autor, btnAdicionar,fr_TipoAutor, lblAutor, lb_Autor, barraLateral, barraLateral2, fr_NovoAutor, fr_Biografia, lblNome, txtNomeAutor, lblPaisOrigem, txtPaisOrigem, lblNascimento, txtNascimento, lblFalescimento, txtFalescimento, lblBiografia, txtBiografia)
+        DimeElementFrameAutor(self.fr_Autor, btnAdicionar,fr_TipoAutor, lblAutor, self.lb_Autor, barraLateral, barraLateral2, fr_NovoAutor, fr_Biografia, lblNome, txtNomeAutor, lblPaisOrigem, txtPaisOrigem, lblNascimento, txtNascimento, lblFalescimento, txtFalescimento, lblBiografia, txtBiografia)
 
 
     def addElementStatus(self):
         #Criação dos Elementos
-        vStatus = StringVar()
+        self.vStatus = StringVar()
         listaStatus = ["Recomendado", "Iniciado", "Finalizado", "Fantasma na Memória"]
         fr_Status = Frame(self.fr_Status, relief="raised", borderwidth=1)
         lblStatus = Label(fr_Status, text="Status da obra", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
-        om_Status = OptionMenu(fr_Status, vStatus, *listaStatus)
+        om_Status = OptionMenu(fr_Status, self.vStatus, *listaStatus)
 
         #Criação dos sub-elementos de Observações do Frame Status
         fr_Observacao = Frame(self.fr_Status)
         barraLateral2 = Scrollbar(fr_Observacao)
         lblObservacoes = Label(fr_Observacao, text="Observações: ", anchor="w", background="#635959", foreground="#fff")
-        txtObservacoes = Text(fr_Observacao, wrap=WORD, undo=True, yscrollcommand=barraLateral2.set)
+        self.txtObservacoes = Text(fr_Observacao, wrap=WORD, undo=True, yscrollcommand=barraLateral2.set)
 
 
         #Criação dos sub-elementos do Frame Status
         fr_StatusData = Frame(self.fr_Status)
         lblDataInicio = Label(fr_StatusData, text="Data Início", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
-        txtDataInicio = Entry(fr_StatusData, relief="raised")
-        lblDataFim = Label(fr_StatusData, text="Data Conclusão", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
-        txtDataFim = Entry(fr_StatusData, relief="raised")
-        lblInfo = Label(fr_StatusData, text="Obs: formato da data: dd/mm/aaaa", font=("Arial", 8))
+        self.txtDataInicio = Entry(fr_StatusData, relief="raised")
+        btnSelecionar = Button(fr_StatusData, text="Inserir Data", command=lambda:Calendario(fr_StatusData).inserirData(self.txtDataInicio, 1))
 
-        btnCadastrarBD = Button(self.fr_Status, text="Salvar Informações")
+
+        lblDataFim = Label(fr_StatusData, text="Data Conclusão", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
+        self.txtDataFim = Entry(fr_StatusData, relief="raised")
+        btnSelecionar2 = Button(fr_StatusData, text="Inserir Data", command=lambda:Calendario(fr_StatusData).inserirData(self.txtDataFim, 2))
+
+
+        btnCadastrarBD = Button(self.fr_Status, text="Salvar Informações", command=self.createNewDocumento)
 
 
         #Configuração das dimensões
-        DimeElementFrameStatus(btnCadastrarBD, fr_Status, lblStatus, om_Status, fr_StatusData, lblDataInicio, txtDataInicio, lblDataFim, txtDataFim, lblInfo,fr_Observacao, barraLateral2, lblObservacoes, txtObservacoes)
+        DimeElementFrameStatus(btnSelecionar, btnSelecionar2, btnCadastrarBD, fr_Status, lblStatus, om_Status, fr_StatusData, lblDataInicio, self.txtDataInicio, lblDataFim, self.txtDataFim,fr_Observacao, barraLateral2, lblObservacoes, self.txtObservacoes)
 
         #Configuração das barraLateral
-        barraLateral2.config(command=txtObservacoes.yview)
+        barraLateral2.config(command=self.txtObservacoes.yview)
 
 
+    def createNewDocumento(self):
+        if self.idUsuario == 0:
+            messagebox.showerror(title="Usuário Não Cadastrado", message="Para realizar a publicação de um conteúdo é necessário estar logado.")
+            self.appCadastroDoc.destroy()
+        else:
+            idUsuario = self.idUsuario
+            titulo = self.txtTitulo.get()
+            descricao = self.txtDescricao.get(1.0, END)
+            anoPublicacao = self.txtAnoPublicacao.get()
+            idCategoria = Categoria().returnIdCategoria(self.lb_ItensCategoria.get(ACTIVE))
+            observacao = self.txtObservacoes.get(1.0, END)
+            dataInicio = self.txtDataInicio.get()
+            dataFim = self.txtDataFim.get()
+            situacao = self.vStatus.get()
+            generosSelecionados = [self.lbItensGenero.get(i) for i in self.lbItensGenero.curselection()]
+            idAutor = Autor().returnIdCategoria(self.lb_Autor.get(ACTIVE))
 
-
+            if titulo == "" or descricao == "" or situacao == "":
+                messagebox.showerror(title="Erro Cadastro Documento", message="Por favor, verifique os valores informados!\n Legenda: * (obrigatório preenchimento)")
+            else:
+                if anoPublicacao == "-3000":
+                    messagebox.showerror(title="Erro Cadastro Documento", message=f"Por favor, verifique os valores informado no campo Ano de Publicação!\nIntervalo disponível de -2999 (A.c) - {self.anoAtual}")
+                else:
+                    if idCategoria == 17 or idAutor == 10:
+                        messagebox.showerror(title="Erro Cadastro Documento", message="Por favor, informe a categoria e autor da qual o Documento pertence.")
+                    else:
+                        if generosSelecionados == []:
+                            messagebox.showerror(title="Erro Cadastro Documento", message="Por favor, verifique os valores informado em Gênero.\nObs: Em relação ao Autor e Categoria, o Gênero deve ser o último a ser marcado.")
+                        else:
+                            sqlInstrucao = "INSERT INTO Documento(titulo, descricao, dataInicio, dataTermino, anoPublicacao, observacoes, situacao, idAutor, idCategoria, idUsuario) values(?,?,?,?,?,?,?,?,?, ?);"
+                            sqlParametros = (titulo, descricao, dataInicio, dataFim, anoPublicacao, observacao, situacao, idAutor, idCategoria, idUsuario)
+                            dbManipulation(sqlInstrucao, sqlParametros)
+                            messagebox.showinfo(title="Sucesso Cadastro Documento", message="Documento cadastrado com sucesso!")
 
 
 

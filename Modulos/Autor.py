@@ -15,6 +15,11 @@ class Autor:
         result = dbSelect(sql)
         return result
 
+    def returnIdCategoria(self, nome):
+        sql = f"SELECT * FROM Autor where nome = '{nome}'"
+        result = dbSelect(sql)
+        return result[0][0]
+
     def addElementListBoxAutor(self, listbox=""):
         """
         Método responsável por adicionar os autores no ListBox

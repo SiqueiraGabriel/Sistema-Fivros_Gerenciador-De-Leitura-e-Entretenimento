@@ -91,7 +91,7 @@ def DimeElementFrameAutor(fr_Autor, btnAdicionar, fr_TipoAutor, lblAutor, lb_Aut
 
     btnAdicionar.place(x=20, y=330, width=380, height=25)
 
-def DimeElementFrameStatus(btnCadastrarBD, fr_Status, lblStatus, om_Status, fr_StatusData, lblDataInicio, txtDataInicio, lblDataFim, txtDataFim, lblInfo,fr_Observacao, barraLateral2, lblObservacoes, txtObservacoes):
+def DimeElementFrameStatus(btnSelecionar1, btnSelecionar2, btnCadastrarBD, fr_Status, lblStatus, om_Status, fr_StatusData, lblDataInicio, txtDataInicio, lblDataFim, txtDataFim,fr_Observacao, barraLateral2, lblObservacoes, txtObservacoes):
     fr_Status.place(x=10, y=30, width=430, height=50)
     lblStatus.place(x=0, y=0, width=430, height=20)
     om_Status.place(x=0, y=20, width=430, height=30)
@@ -101,12 +101,13 @@ def DimeElementFrameStatus(btnCadastrarBD, fr_Status, lblStatus, om_Status, fr_S
     barraLateral2.pack(side=RIGHT, fill=Y, pady=20)
 
 
-    fr_StatusData.place(x=10, y=260, width=430, height=100)
+    fr_StatusData.place(x=10, y=260, width=430, height=400)
     lblDataInicio.place(x=0, y=0, width=200, height=20)
     txtDataInicio.place(x=0, y=20, width=200, height=20)
+    btnSelecionar1.place(x=20, y=45, width=160, height=25)
+
     lblDataFim.place(x=228, y=0, width=200, height=20)
     txtDataFim.place(x=228, y=20, width=200, height=20)
-    lblInfo.place(x=10, y=60, width=430, height=10)
-    # Frame de Observações
+    btnSelecionar2.place(x=248, y=45, width=160, height=25)
 
-    btnCadastrarBD.place(x=20, y=370, width=400, height=30)
+    btnCadastrarBD.place(x=20, y=540, width=400, height=30)

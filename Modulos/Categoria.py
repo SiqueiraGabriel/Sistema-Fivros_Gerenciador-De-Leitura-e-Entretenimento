@@ -20,6 +20,12 @@ class Categoria:
         result = dbSelect(sql)
         return result
 
+    def returnIdCategoria(self, nome):
+        sql = f"SELECT idCategoria FROM Categoria where nome = '{nome}'"
+        result = dbSelect(sql)
+        return result[0][0]
+
+
     def addElementListBoxCadastroDoc(self, listbox=""):
         """
         Este método é responsável por preencher os valores da ListBox de categoria da Tela de Cadastro

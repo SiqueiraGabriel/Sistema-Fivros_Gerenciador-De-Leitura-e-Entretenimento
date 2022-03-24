@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from Modulos.DimensoesTela.DimensaoUsuario import *
 from Modulos.Banco import *
+from Modulos.Menu import *
 from Modulos.TelaPrincipal import TelaPrincipal
 
 
@@ -23,8 +24,7 @@ class Usuario:
         appLogin.geometry("300x230")
         appLogin.resizable(0, 0)
         appLogin.transient(app)
-        appLogin.focus_force()
-        appLogin.grab_set()
+
 
         fr_Login = Frame(appLogin, borderwidth=1, relief="ridge")
 
@@ -107,11 +107,12 @@ class Usuario:
                 self.idUsuario = result[0][0]
                 self.nome = result[0][1]
                 self.email = result[0][2]
-                #self.senha = result[0][3]
+                self.senha = result[0][3]
                 self.admin = result[0][4]
                 self.logado = True
-                print(self.logado)
                 messagebox.showinfo(title="Sucesso Login", message="Login concluído com sucesso")
                 # Criar a tela Principal, após o cadastro
-                TelaPrincipal().criar(app)
+
+                TelaPrincipal(app).criar(app, self.idUsuario)
+
                 appLogin.destroy()

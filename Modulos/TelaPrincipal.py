@@ -2,17 +2,21 @@ import os.path
 from tkinter import *
 from tkinter import ttk
 
+import Modulos.Menu
+
 
 class TelaPrincipal:
 
-    def __init__(self):
+    def __init__(self, app):
         print()
 
     def semAcao(self):
         print()
 
-    def criar(self, app):
+    def criar(self, app, idUsuario):
+        self.idUsuario = idUsuario
         abaPrincipal = ttk.Notebook(app)
+        Modulos.Menu.criarMenu(app, idUsuario=idUsuario)
         abaPrincipal.place(x=10, y=10, width=1340, height=700)
         self.addFrames(abaPrincipal)
 
@@ -136,8 +140,6 @@ class TelaPrincipal:
         btnExcluir.place(y=130, x=10, width=240, height=30)
         btnVisualizar.place(y=170, x=10, width=240, height=30)
         btnRelatorio.place(y=210, x=10, width=240, height=30)
-
-
 
 
 

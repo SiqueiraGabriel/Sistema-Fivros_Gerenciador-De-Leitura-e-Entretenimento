@@ -7,8 +7,6 @@ from sqlite3 import *
 
 
 caminho = os.path.dirname(__file__)
-
-
 app = Tk()
 app.title("Sistema Fivros - Gerenciamento de Leitura e Entretenimento")
 #Dimension of Program
@@ -17,10 +15,15 @@ height = app.winfo_screenheight()
 app.geometry(f"{width}x{height}")
 app.configure(background="#ddd")
 # --------------------------------------------------------------------------
-user = Usuario()
-criarMenu(app)
 
-#user.createViewLogar(app)
+app.update_idletasks()
+
+
+user = Usuario()
+user.createViewLogar(app)
+
+
 
 # --------------------------------------------------------------------------
+
 app.mainloop()
