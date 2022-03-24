@@ -23,6 +23,7 @@ class Categoria:
     def returnIdCategoria(self, nome):
         sql = f"SELECT idCategoria FROM Categoria where nome = '{nome}'"
         result = dbSelect(sql)
+        print(result)
         return result[0][0]
 
 

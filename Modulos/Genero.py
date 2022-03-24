@@ -15,6 +15,12 @@ class Genero:
         result = dbSelect(sql)
         return result
 
+    def returnIdGenero(self, nome):
+        sql = f"SELECT idGenero from Genero where nome = '{nome}';"
+        result = dbSelect(sql)
+        if result != []:
+            return  result[0][0]
+
     def addElementsListBoxGenero(self, lbItens):
         """
         Adicionar os elementos no ListBox de Categoria

@@ -6,7 +6,8 @@ from Modulos.DimensoesTela.DimensaoDocumento import *
 from Modulos.Categoria  import *
 from Modulos.Genero import Genero
 from Modulos.Calendario import *
-
+from Modulos.Banco import *
+from Modulos.DocumentoGenero import *
 
 class Documento:
 
@@ -270,8 +271,16 @@ class Documento:
                             sqlInstrucao = "INSERT INTO Documento(titulo, descricao, dataInicio, dataTermino, anoPublicacao, observacoes, situacao, idAutor, idCategoria, idUsuario) values(?,?,?,?,?,?,?,?,?, ?);"
                             sqlParametros = (titulo, descricao, dataInicio, dataFim, anoPublicacao, observacao, situacao, idAutor, idCategoria, idUsuario)
                             dbManipulation(sqlInstrucao, sqlParametros)
-                            messagebox.showinfo(title="Sucesso Cadastro Documento", message="Documento cadastrado com sucesso!")
+                            
+                            #Recuperar ID do Documento
+                            sql = f"SELECT idDocumento FROM Documento where titulo = '{titulo}' and idUsuario = '{idUsuario}';"
+                            idDocumento = dbSelect(sql)[0][0]
 
+                            #Adicionar as categorias do Documento
+                            DocumentoGenero().createNewDocumentoGenero(idDocumento, generosSelecionados)
+                            
+                            messagebox.showinfo(title="Sucesso Cadastro Documento", message="Documento cadastrado com sucesso!")
+                            self.appCadastroDoc.destroy()
 
 
 
