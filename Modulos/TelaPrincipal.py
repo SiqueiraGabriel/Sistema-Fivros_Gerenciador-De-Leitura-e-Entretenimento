@@ -1,3 +1,4 @@
+from Modulos.ClasseCategoria import *
 import os.path
 from tkinter import *
 from tkinter import ttk
@@ -17,20 +18,19 @@ class TelaPrincipal:
         self.idUsuario = idUsuario
         abaPrincipal = ttk.Notebook(app)
         Modulos.Menu.criarMenu(app, idUsuario=idUsuario)
-        abaPrincipal.place(x=10, y=10, width=1340, height=700)
+        abaPrincipal.place(x=10, y=30, width=1340, height=700)
         self.addFrames(abaPrincipal)
 
 
 
     def addFrames(self, aba):
         #Criação dos Frames - utilizando um dicionário
+        listaCategoria = Categoria().returnAllCategoria()
 
+        #Criação das Abas
+        for itemCategoria in listaCategoria:
+            self.criacaoAbas(aba, itemCategoria[1], itemCategoria[1], itemCategoria[0], itemCategoria[2])
 
-        frameLivro = self.criacaoAbas(aba, "Livros", "MEUS LIVROS")
-        #frameFilme = self.criacaoAbas(aba, "Filmes", "MEUS FILMES")
-        #frameSerie = self.criacaoAbas(aba, "Séries", "MINHAS SÉRIES")
-        #frameAnime = self.criacaoAbas(aba, "Animes", "MEUS ANIMES")
-        #frameDocumentario = self.criacaoAbas(aba, "Documentário", "MEUS DOCUMENTÁRIOS")
 
         #Adição dos itens ao Frame
         #tv_Livro = self.addTreView(frameLivro[0], "AUTOR")
@@ -40,7 +40,7 @@ class TelaPrincipal:
         #tv_Documentario = self.addTreView(frameDocumentario[0], "Diretor")
 
 
-    def criacaoAbas(self, aba, nome, titulo):
+    def criacaoAbas(self, aba, nome, titulo, idCategoria, autor):
 
         #Criação do Frames principais
         fr_Principal = Frame(aba, borderwidth=1, relief='ridge')
@@ -62,35 +62,8 @@ class TelaPrincipal:
         self.abaSituacao = ttk.Notebook(fr_Conteudo)
 
 
-        #Apenas até estabeelecer BD
-        autor ="Escritor"
-
-        #Frames da Aba Situacao
-        fr_Todos = Frame(fr_Conteudo)
-        fr_Recomendado = Frame(fr_Conteudo)
-        fr_Iniciado = Frame(fr_Conteudo)
-        fr_Finalizado = Frame(fr_Conteudo)
-        fr_FantasmaMemoria = Frame(fr_Conteudo)
-
-        #Aba Todos
-        self.abaSituacao.add(fr_Todos, text="Todos")
-        self.addTreView(fr_Todos, autor, "Todos", "Livro")
-
-        #Aba Recomendado
-        self.abaSituacao.add(fr_Recomendado, text="Recomendado")
-        self.addTreView(fr_Recomendado, autor, "Recomendado", "Livro")
-
-        #aba Iniciado
-        self.abaSituacao.add(fr_Iniciado, text="Iniciado")
-        self.addTreView(fr_Iniciado, autor, "Iniciado", "Livro")
-
-        #aba Finalizado
-        self.abaSituacao.add(fr_Finalizado, text="Finalizado")
-        self.addTreView(fr_Finalizado, autor, "Finalizado", "Livro")
-
-        #aba FantasmaMemoria
-        self.abaSituacao.add(fr_FantasmaMemoria, text="Fantasma na Memória")
-        self.addTreView(fr_FantasmaMemoria, autor, "Fantasma na Memória", "Livro")
+        #Adicionar os valores de Situação
+        self.addAppCategoriaSituacao(fr_Conteudo, idCategoria, autor=autor)
 
 
         #Retorno dos frames de Conteúdo e Menu
@@ -99,7 +72,7 @@ class TelaPrincipal:
 
 
 
-    def addTreView(self, fr_Responsavel, colunaAutor, status, nomeTabela):
+    def addTreView(self, fr_Responsavel, colunaAutor, status, idCategoria):
         if(status == "Todos"):
             tv = ttk.Treeview(fr_Responsavel, columns=('id','nome','autor','genero', 'status'), show="headings")
             tv.column('genero', minwidth=50, width=150)
@@ -120,9 +93,42 @@ class TelaPrincipal:
 
 
         tv.pack(pady=10)
-        tv.insert("", 'end', values=('1', 'A Volta ao Mundo em 80 dias','Julio Verne','Aventura','Finalizado'))
-        return tv
 
+        self.insertValuesOfCategoria(tv, idCategoria, status)
+
+
+    def addAppCategoriaSituacao(self, fr_Conteudo, idCategoria, autor):
+
+        #Frames da Aba Situacao
+        fr_Todos = Frame(fr_Conteudo)
+        fr_Recomendado = Frame(fr_Conteudo)
+        fr_Iniciado = Frame(fr_Conteudo)
+        fr_Finalizado = Frame(fr_Conteudo)
+        fr_FantasmaMemoria = Frame(fr_Conteudo)
+
+        #Aba Todos
+        self.abaSituacao.add(fr_Todos, text="Todos")
+        self.addTreView(fr_Todos, autor, "Todos", idCategoria)
+
+        #Aba Recomendado
+        self.abaSituacao.add(fr_Recomendado, text="Recomendado")
+        #self.addTreView(fr_Recomendado, autor, "Recomendado", "Livro")
+
+        #aba Iniciado
+        self.abaSituacao.add(fr_Iniciado, text="Iniciado")
+        #self.addTreView(fr_Iniciado, autor, "Iniciado", "Livro")
+
+        #aba Finalizado
+        self.abaSituacao.add(fr_Finalizado, text="Finalizado")
+        #self.addTreView(fr_Finalizado, autor, "Finalizado", "Livro")
+
+        #aba FantasmaMemoria
+        self.abaSituacao.add(fr_FantasmaMemoria, text="Fantasma na Memória")
+        #self.addTreView(fr_FantasmaMemoria, autor, "Fantasma na Memória", "Livro")
+
+
+    def insertValuesOfCategoria(self, abaCategoria, idCategoria, status):
+        abaCategoria.insert("", 'end', values=('1', 'A Volta ao Mundo em 80 dias', 'Julio Verne', 'Aventura', 'Finalizado'))
 
     def addMenuLateral(self, fr_Menu):
         caminho = os.path.dirname(__file__)

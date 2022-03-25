@@ -1,6 +1,5 @@
 from Modulos.Banco import *
-from Modulos.Categoria import *
-from Modulos.Categoria import Categoria
+from Modulos.ClasseCategoria import *
 from Modulos.Genero import Genero
 
 

@@ -3,7 +3,6 @@
 from tkinter import *
 from tkinter import ttk
 from Modulos.Banco import *
-from Modulos.Documento import *
 
 class Categoria:
 
@@ -52,7 +51,9 @@ class Categoria:
                 messagebox.showinfo(title="Sucesso Cadastro de Categoria", message="Sua nova categoria foi cadastrada com sucesso")
                 self.addElementListBoxCadastroDoc(lb_itens)
 
-
-
+    def returnAllCategoria(self):
+        sql = "SELECT idCategoria, nome, individuoResponsavel from Categoria where idCategoria != 17 order by nome ;"
+        result = dbSelect(sql)
+        return result
 
 

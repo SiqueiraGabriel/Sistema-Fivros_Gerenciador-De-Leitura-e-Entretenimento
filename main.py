@@ -1,6 +1,6 @@
 from Modulos import Banco
 from Modulos.Bibliotecas import *
-from Modulos.Categoria import Categoria
+from Modulos.ClasseCategoria import Categoria
 from Modulos.TelaPrincipal import *
 from Modulos.Banco import *
 from sqlite3 import *

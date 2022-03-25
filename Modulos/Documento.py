@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 from datetime import date
 from Modulos.Autor import Autor
 from Modulos.DimensoesTela.DimensaoDocumento import *
-from Modulos.Categoria  import *
+from Modulos.ClasseCategoria import *
 from Modulos.Genero import Genero
 from Modulos.Calendario import *
 from Modulos.Banco import *
