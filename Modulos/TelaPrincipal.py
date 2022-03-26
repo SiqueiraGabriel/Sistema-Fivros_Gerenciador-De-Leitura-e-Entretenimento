@@ -35,6 +35,8 @@ class TelaPrincipal:
         self.fr_Conteudo = Frame(aba, borderwidth=1, relief='ridge')
         self.fr_Menu = Frame(aba, borderwidth=1, relief='ridge')
         self.fr_Titulo = Frame(self.fr_Conteudo)
+        self.fr_ApresentaAba = Frame(self.fr_Conteudo)
+
 
         #Adição do Menu Lateral
         self.btnAbrirMenu = Button(self.fr_Conteudo, text="|||", background="#8C1018", foreground="#fff", command=self.abrirMenu)
@@ -46,17 +48,13 @@ class TelaPrincipal:
         #Configuração das dimensões
         DimeElemetCriacaoAbas(self.fr_Conteudo, self.fr_Menu, self.fr_VisualizarCategoria, self.lblCategoria, self.optMenuCategoria, self.btnSelecionarCategoria, self.fr_Titulo, self.titulo)
 
-        # Criação da Aba Dentro aba
-        self.fr_ApresentaAba = Frame(self.fr_Conteudo)
-        self.abaSituacao = ttk.Notebook(self.fr_ApresentaAba, padding=2)
 
         #Adicionar os valores de Situação
-        self.addAppCategoriaSituacao(self.fr_Conteudo)
+        self.addAppCategoriaSituacao()
 
 
         #Retorno dos frames de Conteúdo e Menu
-        self.fr_ApresentaAba.place(x=25, y=150, width=1000, height=150)
-        self.abaSituacao.place(x=0, y=0, width=1000, height=150)
+
 
 
     def criarTopoPagina(self):
@@ -68,7 +66,7 @@ class TelaPrincipal:
                                   font=("Arial", 10), foreground="#f6f6f6")
         self.optMenuCategoria = OptionMenu(self.fr_VisualizarCategoria, self.varCategoria, *listaCategoria)
         self.btnSelecionarCategoria = Button(self.fr_VisualizarCategoria, text="Selecionar",
-                                             command=lambda: self.addAppCategoriaSituacao(self.fr_Conteudo))
+                                             command=self.addAppCategoriaSituacao)
 
 
     def addTreView(self, fr_Responsavel, colunaAutor, status, idCategoria):
@@ -97,7 +95,7 @@ class TelaPrincipal:
         self.insertValuesOfCategoria(tv, idCategoria, status)
 
 
-    def addAppCategoriaSituacao(self, fr_Conteudo):
+    def addAppCategoriaSituacao(self):
 
 
 
@@ -112,36 +110,41 @@ class TelaPrincipal:
             idCategoria = 17
             autor = Categoria().returnAutorCategoria(idCategoria)
 
+        print(idCategoria)
+
+        # Criação da Aba Dentro aba
+        self.fr_ApresentaAba.destroy()
+        self.fr_ApresentaAba = Frame(self.fr_Conteudo)
+        abaSituacao = ttk.Notebook(self.fr_ApresentaAba, padding=2)
+        self.fr_ApresentaAba.place(x=25, y=150, width=1000, height=150)
+        abaSituacao.place(x=0, y=0, width=1000, height=150)
 
         #Frames da Aba Situacao
-        fr_Todos = Frame(fr_Conteudo)
-        fr_Recomendado = Frame(fr_Conteudo)
-        fr_Iniciado = Frame(fr_Conteudo)
-        fr_Finalizado = Frame(fr_Conteudo)
-        fr_FantasmaMemoria = Frame(fr_Conteudo)
-
-        #limpar Aba Principal
-
+        fr_Todos = Frame(self.fr_ApresentaAba)
+        fr_Recomendado = Frame(self.fr_ApresentaAba)
+        fr_Iniciado = Frame(self.fr_ApresentaAba)
+        fr_Finalizado = Frame(self.fr_ApresentaAba)
+        fr_FantasmaMemoria = Frame(self.fr_ApresentaAba)
 
 
         #Aba Todos
-        self.abaSituacao.add(fr_Todos, text="Todos")
+        abaSituacao.add(fr_Todos, text="Todos")
         self.addTreView(fr_Todos, autor, "Todos", idCategoria)
 
         #Aba Recomendado
-        self.abaSituacao.add(fr_Recomendado, text="Recomendado")
+        abaSituacao.add(fr_Recomendado, text="Recomendado")
         #self.addTreView(fr_Recomendado, autor, "Recomendado", "Livro")
 
         #aba Iniciado
-        self.abaSituacao.add(fr_Iniciado, text="Iniciado")
+        abaSituacao.add(fr_Iniciado, text="Iniciado")
         #self.addTreView(fr_Iniciado, autor, "Iniciado", "Livro")
 
         #aba Finalizado
-        self.abaSituacao.add(fr_Finalizado, text="Finalizado")
+        abaSituacao.add(fr_Finalizado, text="Finalizado")
         #self.addTreView(fr_Finalizado, autor, "Finalizado", "Livro")
 
         #aba FantasmaMemoria
-        self.abaSituacao.add(fr_FantasmaMemoria, text="Fantasma na Memória")
+        abaSituacao.add(fr_FantasmaMemoria, text="Fantasma na Memória")
         #self.addTreView(fr_FantasmaMemoria, autor, "Fantasma na Memória", "Livro")
 
 
