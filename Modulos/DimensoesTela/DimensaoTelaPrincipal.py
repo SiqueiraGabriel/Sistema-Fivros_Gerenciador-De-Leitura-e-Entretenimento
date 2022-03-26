@@ -20,7 +20,7 @@ def DimeElementMenuLateral(btnFecharMenu, lblMenuTitulo, btnAdicionar, btnAltera
 
 
 
-def DimeElementAbrirMenu(fr_Menu, fr_Conteudo, btnAbrirMenu, fr_Titulo, titulo, fr_VisualizarCategoria, abaSituacao):
+def DimeElementAbrirMenu(fr_Menu, fr_Conteudo, btnAbrirMenu, fr_Titulo, titulo, fr_VisualizarCategoria, fr_ApresentaAba):
     fr_Menu.place(width=260)
     fr_Conteudo.place(x=270, width=1050)
     btnAbrirMenu.place(width=0, height=0)
@@ -29,14 +29,14 @@ def DimeElementAbrirMenu(fr_Menu, fr_Conteudo, btnAbrirMenu, fr_Titulo, titulo, 
     fr_Titulo.place(x=270, y=10, width=700, height=100)
     titulo.place(x=10, y=0, width=450, height=40)
     fr_VisualizarCategoria.place(x=500, y=10, width=200, height=120)
-    abaSituacao.place(x=25, y=150, width=1000, height=150)
+    fr_ApresentaAba.place(x=25, y=150, width=1000, height=150)
 
 
-def DimeElementFecharMenu(fr_Menu, fr_Principal, fr_Conteudo, abaSituacao, btnAbrirMenu, fr_Titulo, fr_VisualizarCategoria):
+def DimeElementFecharMenu(fr_Menu, fr_Principal, fr_Conteudo, fr_ApresentaAba, btnAbrirMenu, fr_Titulo, fr_VisualizarCategoria):
     fr_Menu.place(width=-10)
     fr_Principal.place(width=1310)
     fr_Conteudo.place(x=10, width=1320)
-    abaSituacao.place(x=25, y=150, width=1275, height=150)
+    fr_ApresentaAba.place(x=25, y=150, width=1275, height=150)
     btnAbrirMenu.place(width=30, height=30)
     fr_Titulo.place(width=1000)
     fr_VisualizarCategoria.place(x=780, y=10, width=200, height=120)

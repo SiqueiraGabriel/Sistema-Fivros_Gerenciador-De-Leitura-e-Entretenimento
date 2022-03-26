@@ -65,8 +65,7 @@ class TelaPrincipal:
         self.lblCategoria = Label(self.fr_VisualizarCategoria, text="Visualizar Categoria", background="#635959",
                                   font=("Arial", 10), foreground="#f6f6f6")
         self.optMenuCategoria = OptionMenu(self.fr_VisualizarCategoria, self.varCategoria, *listaCategoria)
-        self.btnSelecionarCategoria = Button(self.fr_VisualizarCategoria, text="Selecionar",
-                                             command=self.addAppCategoriaSituacao)
+        self.btnSelecionarCategoria = Button(self.fr_VisualizarCategoria, text="Selecionar", command=self.addAppCategoriaSituacao)
 
 
     def addTreView(self, fr_Responsavel, colunaAutor, status, idCategoria):
@@ -81,7 +80,7 @@ class TelaPrincipal:
             tv.column('genero', minwidth=150, width=230)
 
 
-        tv.column('id', minwidth=25, width=50)
+        tv.column('id', minwidth=0, width=0)
         tv.column('nome', minwidth=150, width=550)
         tv.column('autor', minwidth=50, width=160)
         tv.heading('id', text="ID")
@@ -115,9 +114,9 @@ class TelaPrincipal:
         # Criação da Aba Dentro aba
         self.fr_ApresentaAba.destroy()
         self.fr_ApresentaAba = Frame(self.fr_Conteudo)
-        abaSituacao = ttk.Notebook(self.fr_ApresentaAba, padding=2)
+        self.abaSituacao = ttk.Notebook(self.fr_ApresentaAba, padding=2)
         self.fr_ApresentaAba.place(x=25, y=150, width=1000, height=150)
-        abaSituacao.place(x=0, y=0, width=1000, height=150)
+        self.abaSituacao.pack(fill=X, expand=True)
 
         #Frames da Aba Situacao
         fr_Todos = Frame(self.fr_ApresentaAba)
@@ -128,38 +127,61 @@ class TelaPrincipal:
 
 
         #Aba Todos
-        abaSituacao.add(fr_Todos, text="Todos")
+        self.abaSituacao.add(fr_Todos, text="Todos")
         self.addTreView(fr_Todos, autor, "Todos", idCategoria)
 
         #Aba Recomendado
-        abaSituacao.add(fr_Recomendado, text="Recomendado")
-        #self.addTreView(fr_Recomendado, autor, "Recomendado", "Livro")
+        self.abaSituacao.add(fr_Recomendado, text="Recomendado")
+        self.addTreView(fr_Recomendado, autor, "Recomendado", idCategoria)
 
         #aba Iniciado
-        abaSituacao.add(fr_Iniciado, text="Iniciado")
-        #self.addTreView(fr_Iniciado, autor, "Iniciado", "Livro")
+        self.abaSituacao.add(fr_Iniciado, text="Iniciado")
+        self.addTreView(fr_Iniciado, autor, "Iniciado", idCategoria)
 
         #aba Finalizado
-        abaSituacao.add(fr_Finalizado, text="Finalizado")
-        #self.addTreView(fr_Finalizado, autor, "Finalizado", "Livro")
+        self.abaSituacao.add(fr_Finalizado, text="Finalizado")
+        self.addTreView(fr_Finalizado, autor, "Finalizado", idCategoria)
 
         #aba FantasmaMemoria
-        abaSituacao.add(fr_FantasmaMemoria, text="Fantasma na Memória")
-        #self.addTreView(fr_FantasmaMemoria, autor, "Fantasma na Memória", "Livro")
+        self.abaSituacao.add(fr_FantasmaMemoria, text="Fantasma na Memória")
+        self.addTreView(fr_FantasmaMemoria, autor, "Fantasma na Memória", idCategoria)
 
 
     def insertValuesOfCategoria(self, abaCategoria, idCategoria, status):
-        #Recuperar todos os valores da Categoria
+
+        if status == "Todos":
+            print("Aqui")
+            if idCategoria == 17:
+                #Recuperar os Valores do documento
+                sql = "SELECT d.idDocumento, d.titulo, a.nome, d.situacao FROM Documento d " \
+                        f"join Autor a on d.idAutor = a.idAutor where idUsuario = '{self.idUsuario}'; "
+            else:
+                sql = "SELECT d.idDocumento, d.titulo, a.nome, d.situacao FROM Documento d " \
+                      f"join Autor a on d.idAutor = a.idAutor where d.idUsuario = '{self.idUsuario}' and d.idCategoria = '{idCategoria}';"
+        elif status != "Todos":
+            print("EStou aqui")
+            if idCategoria == 17:
+                # Recuperar os Valores do documento
+                sql = "SELECT d.idDocumento, d.titulo, a.nome, d.situacao FROM Documento d " \
+                      f"join Autor a on d.idAutor = a.idAutor where idUsuario = '{self.idUsuario}' and situacao = '{status}'; "
+            else:
+                sql = "SELECT d.idDocumento, d.titulo, a.nome, d.situacao FROM Documento d " \
+                      f"join Autor a on d.idAutor = a.idAutor where d.idUsuario = '{self.idUsuario}' and d.idCategoria = '{idCategoria}' and situacao = '{status}';"
 
 
-        abaCategoria.insert("", 'end', values=('1', 'A Volta ao Mundo em 80 dias', 'Julio Verne', 'Aventura', 'Finalizado'))
+        itensDocumento = dbSelect(sql)
 
+        for item in itensDocumento:
+            sql = f"SELECT g.nome from DocumentoGenero dg join Genero g on dg.idGenero = g.idGenero where dg.idDocumento = {item[0]};"
+            listaGenero = ""
+            genero = dbSelect(sql)
 
+            for nomeGenero in genero:
+                listaGenero += f"{nomeGenero[0]}\n "
 
+            abaCategoria.insert("", 'end', values=(item[0],item[1], item[2], listaGenero, item[3]))
 
-
-
-
+        
     def addMenuLateral(self, fr_Menu):
         #Adição dos elementos
         self.btnFecharMenu = Button(fr_Menu, text="|||", background="#8C1018", foreground="#fff", command=self.fecharMenu)
@@ -175,10 +197,10 @@ class TelaPrincipal:
 
 
     def abrirMenu(self):
-        DimeElementAbrirMenu(self.fr_Menu, self.fr_Conteudo, self.btnAbrirMenu, self.fr_Titulo, self.titulo, self.fr_VisualizarCategoria, self.abaSituacao)
+        DimeElementAbrirMenu(self.fr_Menu, self.fr_Conteudo, self.btnAbrirMenu, self.fr_Titulo, self.titulo, self.fr_VisualizarCategoria, self.fr_ApresentaAba)
 
 
     def fecharMenu(self):
-        DimeElementFecharMenu(self.fr_Menu, self.fr_Principal, self.fr_Conteudo, self.abaSituacao, self.btnAbrirMenu, self.fr_Titulo, self.fr_VisualizarCategoria)
+        DimeElementFecharMenu(self.fr_Menu, self.fr_Principal, self.fr_Conteudo, self.fr_ApresentaAba, self.btnAbrirMenu, self.fr_Titulo, self.fr_VisualizarCategoria)
 
 
