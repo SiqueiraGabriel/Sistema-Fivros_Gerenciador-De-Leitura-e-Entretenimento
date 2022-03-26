@@ -16,14 +16,15 @@ class TelaPrincipal:
 
     def criar(self, app, idUsuario):
         self.idUsuario = idUsuario
-        abaPrincipal = ttk.Notebook(app)
+        framePrincipal = Frame(app)
         Modulos.Menu.criarMenu(app, idUsuario=idUsuario)
-        abaPrincipal.place(x=10, y=30, width=1340, height=700)
-        self.addFrames(abaPrincipal)
+        framePrincipal.place(x=10, y=30, width=1340, height=670)
+        self.criacaoAbas(framePrincipal)
 
 
 
     def addFrames(self, aba):
+
         #Criação dos Frames - utilizando um dicionário
         listaCategoria = Categoria().returnAllCategoria()
 
@@ -40,35 +41,36 @@ class TelaPrincipal:
         #tv_Documentario = self.addTreView(frameDocumentario[0], "Diretor")
 
 
-    def criacaoAbas(self, aba, nome, titulo, idCategoria, autor):
+    def criacaoAbas(self, aba, nome="", titulo="Teste", idCategoria="", autor=""):
 
         #Criação do Frames principais
-        fr_Principal = Frame(aba, borderwidth=1, relief='ridge')
-        fr_Principal.place(x=0, y=0, width=1300)
-        aba.add(fr_Principal, text=nome)
+        self.fr_Principal = Frame(aba, borderwidth=1, relief='ridge')
+        #fr_Principal.place(x=0, y=0, width=1300)
+        #aba.add(fr_Principal, text=nome)
 
         #Criação dos Frames Secundários
-        fr_Conteudo = Frame(fr_Principal, borderwidth=1, relief='ridge')
-        fr_Menu = Frame(fr_Principal, borderwidth=1, relief='ridge')
-        fr_AbaSecundaria = Frame(fr_Conteudo)
+        self.fr_Conteudo = Frame(aba, borderwidth=1, relief='ridge')
+        self.fr_Menu = Frame(aba, borderwidth=1, relief='ridge')
+        #fr_AbaSecundaria = Frame(fr_Conteudo)
 
         #Adição dos Frames
-        fr_Conteudo.place(x=10, y=10,width=1050, height=600)
-        fr_Menu.place(x=1060, y=10, width=260, height=600)
-        Label(fr_Conteudo, text=titulo, anchor="center", font=("Arial",15)).pack(padx=10)
-        self.addMenuLateral(fr_Menu)
+        self.fr_Conteudo.place(x=270, y=10,width=1050, height=600)
+        self.fr_Menu.place(x=10, y=10, width=260, height=670)
+        Label(self.fr_Conteudo, text=titulo, anchor="center", font=("Arial",15)).pack(padx=10)
+        self.btnAbrirMenu = Button(self.fr_Conteudo, text="|||",  background="#8C1018", foreground="#fff", command=self.abrirMenu)
+        self.addMenuLateral(self.fr_Menu)
 
         #Criação da Aba Dentro aba
-        self.abaSituacao = ttk.Notebook(fr_Conteudo)
+        self.abaSituacao = ttk.Notebook(self.fr_Conteudo)
 
 
         #Adicionar os valores de Situação
-        self.addAppCategoriaSituacao(fr_Conteudo, idCategoria, autor=autor)
+        self.addAppCategoriaSituacao(self.fr_Conteudo, idCategoria, autor=autor)
 
 
         #Retorno dos frames de Conteúdo e Menu
         self.abaSituacao.place(x=25, y=70, width=1000, height=150)
-        return [fr_Conteudo, fr_Menu]
+        return [self.fr_Conteudo, self.fr_Menu]
 
 
 
@@ -134,18 +136,31 @@ class TelaPrincipal:
         caminho = os.path.dirname(__file__)
 
 
-
+        self.btnFecharMenu = Button(fr_Menu, text="|||", background="#8C1018", foreground="#fff", command=self.fecharMenu)
         btnAdicionar = Button(fr_Menu, text="Adicionar", command=self.semAcao)
         btnAlterar = Button(fr_Menu, text="Alterar", command=self.semAcao)
         btnExcluir = Button(fr_Menu, text="Excluir ", command=self.semAcao)
         btnVisualizar = Button(fr_Menu, text="Visualização Completa", command=self.semAcao)
         btnRelatorio = Button(fr_Menu, text="Gerar Relatório em PDF", command=self.semAcao)
-        Label(fr_Menu, text="MENU", anchor="center").place(width=240)
-        btnAdicionar.place(y=50, x=10, width=240, height=30)
-        btnAlterar.place(y=90, x=10, width=240, height=30)
-        btnExcluir.place(y=130, x=10, width=240, height=30)
-        btnVisualizar.place(y=170, x=10, width=240, height=30)
-        btnRelatorio.place(y=210, x=10, width=240, height=30)
+        lblMenuTitulo = Label(fr_Menu, text="Fivros", anchor="center", font=("Arial", 16, "bold"))
 
 
+        self.btnFecharMenu.place(y=10, x=10, width=30, height=30)
+        lblMenuTitulo.place(y=10, x=60, width=180, height=30)
+        btnAdicionar.place(y=90, x=10, width=240, height=30)
+        btnAlterar.place(y=130, x=10, width=240, height=30)
+        btnExcluir.place(y=170, x=10, width=240, height=30)
+        btnVisualizar.place(y=210, x=10, width=240, height=30)
+        btnRelatorio.place(y=250, x=10, width=240, height=30)
 
+
+    def abrirMenu(self):
+        self.fr_Menu.place(width=260)
+        self.fr_Conteudo.place(x=270, width=1050)
+        self.btnAbrirMenu.place(width=0, height=0)
+
+    def fecharMenu(self):
+        self.fr_Menu.place(width=-10)
+        self.fr_Principal.place(width=1310)
+        self.fr_Conteudo.place(x=10, width=1320)
+        self.btnAbrirMenu.place(width=30, height=30)

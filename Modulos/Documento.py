@@ -124,7 +124,7 @@ class Documento:
         rb_escritor = Radiobutton(fr_ResponsavelButton, text="Escritor", value="ESCRITOR", variable=val_responsavel)
         rb_diretor = Radiobutton(fr_ResponsavelButton, text="Diretor", value="DIRETOR", variable=val_responsavel)
 
-        btnAdicionar = Button(fr_NovaCategoria, text="Adicionar Nova Categoria", command=lambda:Categoria().createNewCategoria(txtNome.get(), val_responsavel.get(), self.lb_Itens))
+        btnAdicionar = Button(fr_NovaCategoria, text="Adicionar Nova Categoria", command=lambda:Categoria().createNewCategoria(txtNome.get(), val_responsavel.get(),  self.lb_ItensCategoria))
 
         #Configurar dimensões do Frame Categoria
         DimeElementFrameCategoria(fr_TipoCategoria, lblItens, self.lb_ItensCategoria, barraLateral, fr_NovaCategoria, lblNome, txtNome, lblResponsavel, fr_ResponsavelButton, rb_escritor, rb_diretor, btnAdicionar)

@@ -13,7 +13,7 @@ app.title("Sistema Fivros - Gerenciamento de Leitura e Entretenimento")
 width = app.winfo_screenwidth()
 height = app.winfo_screenheight()
 app.geometry(f"{width}x{height}")
-app.configure(background="#ddd")
+app.configure(background="#635959")
 # --------------------------------------------------------------------------
 
 app.update_idletasks()
