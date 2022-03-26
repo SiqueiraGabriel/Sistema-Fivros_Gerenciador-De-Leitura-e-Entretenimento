@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter import ttk
 
 import Modulos.Menu
+from Modulos.DimensoesTela.DimensaoTelaPrincipal import *
 
 
 class TelaPrincipal:
@@ -23,58 +24,55 @@ class TelaPrincipal:
 
 
 
-    def addFrames(self, aba):
 
-        #Criação dos Frames - utilizando um dicionário
-        listaCategoria = Categoria().returnAllCategoria()
-
-        #Criação das Abas
-        for itemCategoria in listaCategoria:
-            self.criacaoAbas(aba, itemCategoria[1], itemCategoria[1], itemCategoria[0], itemCategoria[2])
-
-
-        #Adição dos itens ao Frame
-        #tv_Livro = self.addTreView(frameLivro[0], "AUTOR")
-        #tv_Filme = self.addTreView(frameFilme[0], "DIRETOR")
-        #tv_Serie = self.addTreView(frameSerie[0], "DIRETOR")
-        #tv_Anime = self.addTreView(frameAnime[0], "DIRETOR")
-        #tv_Documentario = self.addTreView(frameDocumentario[0], "Diretor")
-
-
-    def criacaoAbas(self, aba, nome="", titulo="Teste", idCategoria="", autor=""):
+    def criacaoAbas(self, aba):
 
         #Criação do Frames principais
         self.fr_Principal = Frame(aba, borderwidth=1, relief='ridge')
-        #fr_Principal.place(x=0, y=0, width=1300)
-        #aba.add(fr_Principal, text=nome)
+
 
         #Criação dos Frames Secundários
         self.fr_Conteudo = Frame(aba, borderwidth=1, relief='ridge')
         self.fr_Menu = Frame(aba, borderwidth=1, relief='ridge')
-        #fr_AbaSecundaria = Frame(fr_Conteudo)
+        self.fr_Titulo = Frame(self.fr_Conteudo)
 
-        #Adição dos Frames
-        self.fr_Conteudo.place(x=270, y=10,width=1050, height=600)
-        self.fr_Menu.place(x=10, y=10, width=260, height=670)
-        Label(self.fr_Conteudo, text=titulo, anchor="center", font=("Arial",15)).pack(padx=10)
-        self.btnAbrirMenu = Button(self.fr_Conteudo, text="|||",  background="#8C1018", foreground="#fff", command=self.abrirMenu)
+        #Adição do Menu Lateral
+        self.btnAbrirMenu = Button(self.fr_Conteudo, text="|||", background="#8C1018", foreground="#fff", command=self.abrirMenu)
         self.addMenuLateral(self.fr_Menu)
 
-        #Criação da Aba Dentro aba
-        self.abaSituacao = ttk.Notebook(self.fr_Conteudo)
+        #Criação do Topo da Página
+        self.criarTopoPagina()
 
+        #Configuração das dimensões
+        DimeElemetCriacaoAbas(self.fr_Conteudo, self.fr_Menu, self.fr_VisualizarCategoria, self.lblCategoria, self.optMenuCategoria, self.btnSelecionarCategoria, self.fr_Titulo, self.titulo)
+
+        # Criação da Aba Dentro aba
+        self.fr_ApresentaAba = Frame(self.fr_Conteudo)
+        self.abaSituacao = ttk.Notebook(self.fr_ApresentaAba, padding=2)
 
         #Adicionar os valores de Situação
-        self.addAppCategoriaSituacao(self.fr_Conteudo, idCategoria, autor=autor)
+        self.addAppCategoriaSituacao(self.fr_Conteudo)
 
 
         #Retorno dos frames de Conteúdo e Menu
-        self.abaSituacao.place(x=25, y=70, width=1000, height=150)
-        return [self.fr_Conteudo, self.fr_Menu]
+        self.fr_ApresentaAba.place(x=25, y=150, width=1000, height=150)
+        self.abaSituacao.place(x=0, y=0, width=1000, height=150)
 
+
+    def criarTopoPagina(self):
+        listaCategoria = Categoria().returnAllCategoria()
+        self.varCategoria = StringVar()
+        self.titulo = Label(self.fr_Titulo, text="MEUS CONTEÚDOS CADASTRADOS", anchor="center", font=("Arial", 15))
+        self.fr_VisualizarCategoria = Frame(self.fr_Titulo)
+        self.lblCategoria = Label(self.fr_VisualizarCategoria, text="Visualizar Categoria", background="#635959",
+                                  font=("Arial", 10), foreground="#f6f6f6")
+        self.optMenuCategoria = OptionMenu(self.fr_VisualizarCategoria, self.varCategoria, *listaCategoria)
+        self.btnSelecionarCategoria = Button(self.fr_VisualizarCategoria, text="Selecionar",
+                                             command=lambda: self.addAppCategoriaSituacao(self.fr_Conteudo))
 
 
     def addTreView(self, fr_Responsavel, colunaAutor, status, idCategoria):
+
         if(status == "Todos"):
             tv = ttk.Treeview(fr_Responsavel, columns=('id','nome','autor','genero', 'status'), show="headings")
             tv.column('genero', minwidth=50, width=150)
@@ -99,7 +97,21 @@ class TelaPrincipal:
         self.insertValuesOfCategoria(tv, idCategoria, status)
 
 
-    def addAppCategoriaSituacao(self, fr_Conteudo, idCategoria, autor):
+    def addAppCategoriaSituacao(self, fr_Conteudo):
+
+
+
+        #Valor após escolher a Categoria
+        if self.varCategoria.get() != []:
+            idCategoria = Categoria().returnIdCategoria(self.varCategoria.get())
+            autor = Categoria().returnAutorCategoria(idCategoria)
+
+
+        #Valor Padrão da Categoria
+        if idCategoria == None:
+            idCategoria = 17
+            autor = Categoria().returnAutorCategoria(idCategoria)
+
 
         #Frames da Aba Situacao
         fr_Todos = Frame(fr_Conteudo)
@@ -107,6 +119,10 @@ class TelaPrincipal:
         fr_Iniciado = Frame(fr_Conteudo)
         fr_Finalizado = Frame(fr_Conteudo)
         fr_FantasmaMemoria = Frame(fr_Conteudo)
+
+        #limpar Aba Principal
+
+
 
         #Aba Todos
         self.abaSituacao.add(fr_Todos, text="Todos")
@@ -130,12 +146,19 @@ class TelaPrincipal:
 
 
     def insertValuesOfCategoria(self, abaCategoria, idCategoria, status):
+        #Recuperar todos os valores da Categoria
+
+
         abaCategoria.insert("", 'end', values=('1', 'A Volta ao Mundo em 80 dias', 'Julio Verne', 'Aventura', 'Finalizado'))
 
+
+
+
+
+
+
     def addMenuLateral(self, fr_Menu):
-        caminho = os.path.dirname(__file__)
-
-
+        #Adição dos elementos
         self.btnFecharMenu = Button(fr_Menu, text="|||", background="#8C1018", foreground="#fff", command=self.fecharMenu)
         btnAdicionar = Button(fr_Menu, text="Adicionar", command=self.semAcao)
         btnAlterar = Button(fr_Menu, text="Alterar", command=self.semAcao)
@@ -144,23 +167,15 @@ class TelaPrincipal:
         btnRelatorio = Button(fr_Menu, text="Gerar Relatório em PDF", command=self.semAcao)
         lblMenuTitulo = Label(fr_Menu, text="Fivros", anchor="center", font=("Arial", 16, "bold"))
 
-
-        self.btnFecharMenu.place(y=10, x=10, width=30, height=30)
-        lblMenuTitulo.place(y=10, x=60, width=180, height=30)
-        btnAdicionar.place(y=90, x=10, width=240, height=30)
-        btnAlterar.place(y=130, x=10, width=240, height=30)
-        btnExcluir.place(y=170, x=10, width=240, height=30)
-        btnVisualizar.place(y=210, x=10, width=240, height=30)
-        btnRelatorio.place(y=250, x=10, width=240, height=30)
+        #Configuração das dimensões
+        DimeElementMenuLateral(self.btnFecharMenu, lblMenuTitulo, btnAdicionar, btnAlterar, btnExcluir, btnVisualizar, btnRelatorio)
 
 
     def abrirMenu(self):
-        self.fr_Menu.place(width=260)
-        self.fr_Conteudo.place(x=270, width=1050)
-        self.btnAbrirMenu.place(width=0, height=0)
+        DimeElementAbrirMenu(self.fr_Menu, self.fr_Conteudo, self.btnAbrirMenu, self.fr_Titulo, self.titulo, self.fr_VisualizarCategoria, self.abaSituacao)
+
 
     def fecharMenu(self):
-        self.fr_Menu.place(width=-10)
-        self.fr_Principal.place(width=1310)
-        self.fr_Conteudo.place(x=10, width=1320)
-        self.btnAbrirMenu.place(width=30, height=30)
+        DimeElementFecharMenu(self.fr_Menu, self.fr_Principal, self.fr_Conteudo, self.abaSituacao, self.btnAbrirMenu, self.fr_Titulo, self.fr_VisualizarCategoria)
+
+

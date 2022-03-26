@@ -22,8 +22,8 @@ class Categoria:
     def returnIdCategoria(self, nome):
         sql = f"SELECT idCategoria FROM Categoria where nome = '{nome}'"
         result = dbSelect(sql)
-        print(result)
-        return result[0][0]
+        for item in result:
+            return item[0]
 
 
     def addElementListBoxCadastroDoc(self, listbox=""):
@@ -52,8 +52,18 @@ class Categoria:
                 self.addElementListBoxCadastroDoc(lb_itens)
 
     def returnAllCategoria(self):
-        sql = "SELECT idCategoria, nome, individuoResponsavel from Categoria where idCategoria != 17 order by nome ;"
+        sql = "SELECT nome from Categoria order by nome;"
         result = dbSelect(sql)
-        return result
+        categoriaList = []
+        for item in result:
+            categoriaList.append(item[0])
+
+        return categoriaList
+
+    def returnAutorCategoria(self, idCategoria):
+        sql = f"SELECT individuoResponsavel from Categoria where idCategoria = '{idCategoria}'"
+        result = dbSelect(sql)
+        for item in result:
+            return item[0]
 
 
