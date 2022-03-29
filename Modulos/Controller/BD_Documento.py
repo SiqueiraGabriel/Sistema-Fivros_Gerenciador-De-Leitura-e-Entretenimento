@@ -18,7 +18,7 @@ class BD_Documento:
 
     def updateDocument(self, idDocumento, situacao, dataInicio, dataTermino, observacoes, telaAlteracao):
         txtConfirm = messagebox.askyesno(title="Alteração de Dados Documento", message="Você deseja alterar os dados deste documento")
-        
+
         if txtConfirm:
             sql = f"UPDATE Documento " \
               f"set situacao = '{situacao}', dataInicio = '{dataInicio}', dataTermino = '{dataTermino}', observacoes = '{observacoes}' " \
@@ -27,6 +27,22 @@ class BD_Documento:
             messagebox.showinfo(title="Alteração do Documento", message="Dados atualizados com sucesso!")
             telaAlteracao.destroy()
         else:
-            messagebox.showwarning(title="Alteração do Docuemnto", message="Os dados cadastrados forma excluídos e o documento não foi alterado")
+            messagebox.showwarning(title="Alteração do Docuemnto", message="Os dados cadastrados foram excluídos e o documento não foi alterado")
             telaAlteracao.destroy()
+
+    def deleteDocument(self, idDocumento=0, telaExclusao=""):
+        if idDocumento == None:
+            messagebox.showerror(title="Erro Exclusão de Documento", message="Por favor, selecione o documento que deseja excluir.")
+        else:
+            txtConfirma = messagebox.askyesno(title="Exclusão de Documento", message="Você deseja mandar este documento para a Lixeira ?")
+            if txtConfirma:
+                sql = f"UPDATE Documento set situacao = 'Lixeira' where idDocumento = '{idDocumento}';"
+                dbUpdate(sql)
+                #Incluir uma tela de Lixeira
+                messagebox.showinfo(title="Exclusão de Documento", message="Documento excluído com sucesso!")
+                telaExclusao.destroy()
+            else:
+                messagebox.showwarning(title="Exclusão de Documento", message="A exclusão foi negado e os dados não sofreram alterações!")
+                telaExclusao.destroy()
+
 

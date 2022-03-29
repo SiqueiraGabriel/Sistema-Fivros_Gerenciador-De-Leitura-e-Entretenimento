@@ -290,6 +290,8 @@ class Documento:
         self.appAlteraDoc.configure(background="#ddd")
         self.appAlteraDoc.transient(app)
 
+
+
     def createViewAlteraDoc(self, app, idUsuario = 0, idDocumento=0):
         self.createTelaAlteracao(app)
         self.idUsuario = idUsuario
@@ -304,7 +306,7 @@ class Documento:
 
             #Consulta no DB, todos Documento
             listaDocumento = []
-            sql = f"SELECT titulo from Documento where idUsuario = '{self.idUsuario}'"
+            sql = f"SELECT titulo from Documento where idUsuario = '{self.idUsuario}' and situacao != 'Lixeira'"
             result = dbSelect(sql)
 
             for item in result:
@@ -395,6 +397,38 @@ class Documento:
 
             btnAlterarDados.place(x=20, y=480, width=420, height=30)
 
-    def documentoAtualizarDados(self):
-        print()
+    def createTelaDelete(self, app):
+        self.appDeleteDoc = Toplevel()
+        self.appDeleteDoc.title("Exclusão de Conetúdo")
+        self.appDeleteDoc.geometry("400x250")
+        self.appDeleteDoc.resizable(0,0)
+        self.appDeleteDoc.configure(background="#ddd")
+        self.appDeleteDoc.transient(app)
 
+
+    def createViewDelete(self, app, idUsuario, idDocumento=0):
+        self.createTelaDelete(app)
+        self.idUsuario = idUsuario
+
+        fr_Principal = Frame(self.appDeleteDoc)
+        txtTitulo = Label(fr_Principal, text="EXCLUSÃO DE CONTEÚDO", anchor="center", font=("Arial", 14))
+
+        # Consulta no DB, todos Documento
+        listaDocumento = []
+        sql = f"SELECT titulo from Documento where idUsuario = '{self.idUsuario}' and situacao != 'Lixeira'"
+        result = dbSelect(sql)
+
+        for item in result:
+            listaDocumento.append(item[0])
+
+        self.varDocumentoSelecionado = StringVar()
+
+        lblDocumentoSelecionado = Label(fr_Principal, text="Identificar Documento para exclusão", anchor="w",background="#635959", font=("Arial", 10), foreground="#f6f6f6")
+        self.documentoExcluir = OptionMenu(fr_Principal, self.varDocumentoSelecionado, *listaDocumento)
+        btnDocumentoExcluir = Button(fr_Principal, text="Selecionar", command=lambda:BD_Documento().deleteDocument(BD_Documento().searchIdDocument(self.varDocumentoSelecionado.get()), self.appDeleteDoc))
+
+        fr_Principal.place(x=10, y=10, width=380, height=230)
+        txtTitulo.place(x=0, y=10, width=380, height=20)
+        lblDocumentoSelecionado.place(x=10, y=100, width=360, height=20)
+        self.documentoExcluir.place(x=10, y=120, width=360, height=30)
+        btnDocumentoExcluir.place(x=20, y=170, width=320, height=30)

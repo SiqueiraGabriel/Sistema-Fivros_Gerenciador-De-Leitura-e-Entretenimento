@@ -154,10 +154,10 @@ class TelaPrincipal:
             if idCategoria == 17:
                 #Recuperar os Valores do documento
                 sql = "SELECT d.idDocumento, d.titulo, a.nome, d.situacao FROM Documento d " \
-                        f"join Autor a on d.idAutor = a.idAutor where idUsuario = '{self.idUsuario}'; "
+                        f"join Autor a on d.idAutor = a.idAutor where idUsuario = '{self.idUsuario}' and situacao != 'Lixeira'; "
             else:
                 sql = "SELECT d.idDocumento, d.titulo, a.nome, d.situacao FROM Documento d " \
-                      f"join Autor a on d.idAutor = a.idAutor where d.idUsuario = '{self.idUsuario}' and d.idCategoria = '{idCategoria}';"
+                      f"join Autor a on d.idAutor = a.idAutor where d.idUsuario = '{self.idUsuario}' and d.idCategoria = '{idCategoria}' and situacao != 'Lixeira';"
         elif status != "Todos":
             print("EStou aqui")
             if idCategoria == 17:
@@ -187,7 +187,7 @@ class TelaPrincipal:
         self.btnFecharMenu = Button(fr_Menu, text="|||", background="#8C1018", foreground="#fff", command=self.fecharMenu)
         btnAdicionar = Button(fr_Menu, text="Adicionar", command=lambda:Documento().createViewDocumento("Conteúdo", idUsuario=self.idUsuario))
         btnAlterar = Button(fr_Menu, text="Alterar", command=lambda:Documento().createViewAlteraDoc(self.app, self.idUsuario))
-        btnExcluir = Button(fr_Menu, text="Excluir ", command=self.semAcao)
+        btnExcluir = Button(fr_Menu, text="Excluir ", command=lambda:Documento().createViewDelete(self.app, self.idUsuario))
         btnVisualizar = Button(fr_Menu, text="Visualização Completa", command=self.semAcao)
         btnRelatorio = Button(fr_Menu, text="Gerar Relatório em PDF", command=self.semAcao)
         lblMenuTitulo = Label(fr_Menu, text="Fivros", anchor="center", font=("Arial", 16, "bold"))
