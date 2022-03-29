@@ -8,6 +8,7 @@ from Modulos.Genero import Genero
 from Modulos.Calendario import *
 from Modulos.Banco import *
 from Modulos.DocumentoGenero import *
+from Modulos.Controller.BD_Documento import *
 
 class Documento:
 
@@ -49,7 +50,6 @@ class Documento:
         self.appCadastroDoc.resizable(0, 0)
         self.appCadastroDoc.configure(background="#ddd")
         self.appCadastroDoc.transient(app)
-
 
     def createAllFrames(self):
         self.fr_Documento = Frame(self.aba, borderwidth=1, relief="raised")
@@ -282,6 +282,93 @@ class Documento:
                             messagebox.showinfo(title="Sucesso Cadastro Documento", message="Documento cadastrado com sucesso!")
                             self.appCadastroDoc.destroy()
 
+    def createTelaAlteracao(self, app):
+        self.appAlteraDoc = Toplevel()
+        self.appAlteraDoc.title("Alteração de Conteúdo")
+        self.appAlteraDoc.geometry("500x720")
+        self.appAlteraDoc.resizable(0,0)
+        self.appAlteraDoc.configure(background="#ddd")
+        self.appAlteraDoc.transient(app)
+
+    def createViewAlteraDoc(self, app, idUsuario = 0, idDocumento=0):
+        self.createTelaAlteracao(app)
+        self.idUsuario = idUsuario
+
+        if idUsuario != 0:
+            #Criar o Frame Principal da Tela de Alterações
+            fr_Alteracao = Frame(self.appAlteraDoc, borderwidth=1, relief="raised")
+
+            lblTitulo = Label(fr_Alteracao, text="ALTERAÇÃO DE CONTEÙDO", anchor="center", font=("Arial", 14))
+
+            #Elementos relacionado a alteração do Conetúdo
+
+            #Consulta no DB, todos Documento
+            listaDocumento = []
+            sql = f"SELECT titulo from Documento where idUsuario = '{self.idUsuario}'"
+            result = dbSelect(sql)
+
+            for item in result:
+                listaDocumento.append(item[0])
+
+            self.varDocumentoSelecionado = StringVar()
+
+            lblDocumentoSelecionado = Label(fr_Alteracao, text="Identificar Documento para alteração", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
+            self.documentoAlterar = OptionMenu(fr_Alteracao, self.varDocumentoSelecionado, *listaDocumento)
+            btnDocumentoEscolhido = Button(fr_Alteracao, text="Selecionar", command=lambda:self.createViewAltera(BD_Documento().searchIdDocument(name=self.varDocumentoSelecionado.get())))
+
+
+            self.fr_ElementUpdate = Frame(fr_Alteracao, borderwidth=1, relief="raised")
+
+
+            fr_Alteracao.place(x=10, y=10, width=480, height=700)
+            lblTitulo.place(x=0, y=10, width=460, height=20)
+            lblDocumentoSelecionado.place(x=10, y=60, width=460, height=20)
+            self.documentoAlterar.place(x=10, y=80, width=460, height=30)
+            btnDocumentoEscolhido.place(x=20, y=120, width=440, height=25)
+
+    def createViewAltera(self, idDocumento=0):
+
+        if idDocumento == None:
+            messagebox.showerror(title="ERRO Alteração Documento", message="Por favor, selecione o documento que deseja realizar as alterações!")
+        else:
+
+            #Campo de Situacao
+            listaStatus = ["Recomendado", "Iniciado", "Finalizado", "Fantasma na Memória"]
+            varStatus = StringVar()
+            lblAlteraStatus = Label(self.fr_ElementUpdate, text="Status da Obra",  anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
+            om_alteraStatus = OptionMenu(self.fr_ElementUpdate, varStatus, *listaStatus)
+
+            # Campo Observações
+            fr_ObservacaoAltera = Frame(self.fr_ElementUpdate)
+            lblAlteraObservacao = Label(fr_ObservacaoAltera, text="Observações", anchor="w", background="#635959", font=("Arial", 10), foreground="#f6f6f6")
+            barraLateralObservacao = Scrollbar(fr_ObservacaoAltera)
+            txtAlteraObservacao = Text(fr_ObservacaoAltera, wrap=WORD, undo=True, yscrollcommand=barraLateralObservacao.set)
+
+
+
+            # Configurar Barra LAteral
+            barraLateralObservacao.config(command=txtAlteraObservacao.yview)
+
+            #Campos de Data
+            fr_alteraData = Frame(self.fr_ElementUpdate)
+            lblAlteraDataInicio = Label(fr_alteraData, text="Data Início", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
+            self.txtAlteraDataInicio = Entry(fr_alteraData, relief="raised")
+            btnSelecionar = Button(fr_alteraData, text="Inserir Data", command=lambda: Calendario(fr_alteraData).inserirData(self.txtAlteraDataInicio, 1))
+
+            lblAlteraDataFim = Label(fr_alteraData, text="Data Conclusão", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
+            self.txtAlteraDataFim = Entry(fr_alteraData, relief="raised")
+            btnSelecionar2 = Button(fr_alteraData, text="Inserir Data", command=lambda: Calendario(fr_alteraData).inserirData(self.txtAlteraDataFim, 2))
+
+
+            btnAlterarDados = Button(self.fr_ElementUpdate, text="Salvar Modificações", command=lambda:BD_Documento().updateDocument(idDocumento, varStatus.get(), self.txtAlteraDataInicio.get(), self.txtAlteraDataFim.get(), txtAlteraObservacao.get(1.0, END), self.appAlteraDoc))
+
+            #Recuperar os valores do BD
+            dadosCadastrados = BD_Documento().returnAllUpdateDocument(idDocumento)
+            varStatus.set(dadosCadastrados[0])
+            txtAlteraObservacao.delete(1.0, END)
+            txtAlteraObservacao.insert(1.0, dadosCadastrados[1])
+            self.txtAlteraDataInicio.insert(1, dadosCadastrados[2])
+            self.txtAlteraDataFim.insert(1, dadosCadastrados[3])
 
 
 
@@ -289,4 +376,25 @@ class Documento:
 
 
 
+            self.fr_ElementUpdate.place(x=10, y=170, width=460, heigh=520)
+            lblAlteraStatus.place(x=10, y=10, width=440, height=20)
+            om_alteraStatus.place(x=10, y=30, width=440, height=25)
+            fr_ObservacaoAltera.place(x=10, y=70, width=440, height= 120)
+            lblAlteraObservacao.place(x=0, y=0, width=440, height=20)
+            txtAlteraObservacao.place(x=0, y=20, width=420, height=100)
+            barraLateralObservacao.pack(side=RIGHT, fill=Y, pady=20)
+
+            fr_alteraData.place(x=10, y=200, width=440, height=270)
+            lblAlteraDataInicio.place(x=0, y=0, width=200, height=20)
+            self.txtAlteraDataInicio.place(x=0, y=20, width=200, height=20)
+            btnSelecionar.place(x=20, y=45, width=160, height=25)
+
+            lblAlteraDataFim.place(x=228, y=0, width=200, height=20)
+            self.txtAlteraDataFim.place(x=228, y=20, width=200, height=20)
+            btnSelecionar2.place(x=248, y=45, width=160, height=25)
+
+            btnAlterarDados.place(x=20, y=480, width=420, height=30)
+
+    def documentoAtualizarDados(self):
+        print()
 

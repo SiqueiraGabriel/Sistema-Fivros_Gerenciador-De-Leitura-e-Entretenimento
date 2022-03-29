@@ -2,7 +2,7 @@ from Modulos.ClasseCategoria import *
 import os.path
 from tkinter import *
 from tkinter import ttk
-
+from Modulos.Documento import Documento
 import Modulos.Menu
 from Modulos.DimensoesTela.DimensaoTelaPrincipal import *
 
@@ -10,7 +10,7 @@ from Modulos.DimensoesTela.DimensaoTelaPrincipal import *
 class TelaPrincipal:
 
     def __init__(self, app):
-        print()
+        self.app = app
 
     def semAcao(self):
         print()
@@ -72,19 +72,19 @@ class TelaPrincipal:
 
         if(status == "Todos"):
             tv = ttk.Treeview(fr_Responsavel, columns=('id','nome','autor','genero', 'status'), show="headings")
-            tv.column('genero', minwidth=50, width=150)
-            tv.column('status', minwidth=25, width=80)
+            tv.column('genero', minwidth=50, width=400)
+            tv.column('status', minwidth=100, width=120)
             tv.heading('status', text="STATUS")
         else:
             tv = ttk.Treeview(fr_Responsavel, columns=('id','nome','autor','genero'), show="headings")
-            tv.column('genero', minwidth=150, width=230)
+            tv.column('genero', minwidth=300, width=400)
 
 
         tv.column('id', minwidth=0, width=0)
-        tv.column('nome', minwidth=150, width=550)
+        tv.column('nome', minwidth=150, width=500)
         tv.column('autor', minwidth=50, width=160)
         tv.heading('id', text="ID")
-        tv.heading('nome',text="NOME")
+        tv.heading('nome',text="TÍTULO DA OBRA")
         tv.heading('autor', text=colunaAutor.upper())
         tv.heading('genero', text="GÊNERO")
 
@@ -177,7 +177,7 @@ class TelaPrincipal:
             genero = dbSelect(sql)
 
             for nomeGenero in genero:
-                listaGenero += f"{nomeGenero[0]}\n "
+                listaGenero += f"- {nomeGenero[0]} "
 
             abaCategoria.insert("", 'end', values=(item[0],item[1], item[2], listaGenero, item[3]))
 
@@ -185,8 +185,8 @@ class TelaPrincipal:
     def addMenuLateral(self, fr_Menu):
         #Adição dos elementos
         self.btnFecharMenu = Button(fr_Menu, text="|||", background="#8C1018", foreground="#fff", command=self.fecharMenu)
-        btnAdicionar = Button(fr_Menu, text="Adicionar", command=self.semAcao)
-        btnAlterar = Button(fr_Menu, text="Alterar", command=self.semAcao)
+        btnAdicionar = Button(fr_Menu, text="Adicionar", command=lambda:Documento().createViewDocumento("Conteúdo", idUsuario=self.idUsuario))
+        btnAlterar = Button(fr_Menu, text="Alterar", command=lambda:Documento().createViewAlteraDoc(self.app, self.idUsuario))
         btnExcluir = Button(fr_Menu, text="Excluir ", command=self.semAcao)
         btnVisualizar = Button(fr_Menu, text="Visualização Completa", command=self.semAcao)
         btnRelatorio = Button(fr_Menu, text="Gerar Relatório em PDF", command=self.semAcao)
