@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
+
+import Modulos.Banco
 from Modulos.DimensoesTela.DimensaoUsuario import *
 from Modulos.Banco import *
 from Modulos.Menu import *
@@ -83,7 +85,7 @@ class Usuario:
                     senha = self.txtSenhaCadastro.get()
                     sqlPt1 = """INSERT INTO Usuario(nome, email, senha) values(?, ?, ?);"""
                     sqlPt2 = (nome, email, senha)
-                    dbManipulation(sqlPt1, sqlPt2)
+                    dbInsert(sqlPt1, sqlPt2)
                     messagebox.showinfo(title="Sucesso Cadastro", message="Seu cadastro foi realizado com sucesso.\n Você agora será redirecionado para tela de Login")
                     self.createViewLogar(app)
                     appCadastro.destroy()
@@ -116,3 +118,45 @@ class Usuario:
                 TelaPrincipal(app).criar(app, self.idUsuario)
 
                 appLogin.destroy()
+
+    def createViewPerfil(self, app, idUsuario):
+        appPerfil = Toplevel()
+        appPerfil.title("Perfil do Usuário")
+        appPerfil.geometry("300x360")
+        appPerfil.configure(background="#ddd")
+        appPerfil.resizable(0, 0)
+        appPerfil.transient(app)
+
+        varCabecalho = self.returnCabecalhoPerfil(idUsuario)
+        print(varCabecalho)
+        valor = 0
+
+        fr_Principal = Frame(appPerfil)
+        fr_Cabecalho = Frame(fr_Principal)
+        fr_Icone = Frame(fr_Cabecalho, borderwidth=1, relief="raised", background="#323232")
+        lblNomePerfil = Label(fr_Cabecalho, text=f"{varCabecalho[0]}", anchor="center", font=("Arial", 12, "bold"))
+        lblEmailPerfil = Label(fr_Cabecalho, text=f"{varCabecalho[1]}", anchor="center", font=("Arial", 9))
+
+        fr_GroupDocument = Frame(fr_Cabecalho, borderwidth=1, relief="solid")
+        lblTitulo = Label(fr_GroupDocument, text="Minhas Coleções", anchor="w", font=("Arial", 9, "bold"))
+        lblRecomendado = Label(fr_GroupDocument, text=" Recomendado: ", anchor="e")
+        txtRecomendado = Label(fr_GroupDocument, text=f"{self.returnCountSituacao(idUsuario, 'Recomendado'):3}", anchor="e", font=("Arial", 9, "bold"))
+        lblIniciado = Label(fr_GroupDocument, text="Iniciado: ", anchor="e")
+        txtIniciado = Label(fr_GroupDocument, text=f"{self.returnCountSituacao(idUsuario, 'Iniciado'):3}", anchor="e", font=("Arial", 9, "bold"))
+        lblFinalizado = Label(fr_GroupDocument, text="Finalizado: ", anchor="e")
+        txtFinalizado = Label(fr_GroupDocument, text=f"{self.returnCountSituacao(idUsuario, 'Finalizado'):3}", anchor="e", font=("Arial", 9, "bold"))
+        lblFantasmaMemo = Label(fr_GroupDocument, text="Fantasma na Memória: ", anchor="e")
+        txtFantasmaMemo = Label(fr_GroupDocument, text=f"{self.returnCountSituacao(idUsuario, 'Fantasma na Memória'):3}", anchor="e", font=("Arial", 9, "bold"))
+
+        DimeCriarViewPerfil(fr_Principal, fr_Cabecalho, fr_Icone, lblNomePerfil, lblEmailPerfil, fr_GroupDocument, lblTitulo, lblRecomendado, txtRecomendado, lblIniciado, txtIniciado, lblFinalizado, txtFinalizado, lblFantasmaMemo, txtFantasmaMemo)
+
+
+    def returnCabecalhoPerfil(self, idUsuario):
+        sql = f"SELECT nome, email from Usuario where ID = '{idUsuario}'"
+        result = dbSelect(sql)
+        return result[0]
+
+    def returnCountSituacao(self, idUsuario, status):
+        sql = f"select count(*) from Documento where idUsuario = '{idUsuario}' and situacao = '{status}'"
+        result = dbSelect(sql)
+        return result[0][0]

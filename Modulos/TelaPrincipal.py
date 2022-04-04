@@ -1,3 +1,5 @@
+from PIL import ImageTk, Image
+
 from Modulos.ClasseCategoria import *
 import os.path
 from tkinter import *
@@ -29,6 +31,11 @@ class TelaPrincipal:
 
         #Criação do Frames principais
         self.fr_Principal = Frame(aba, borderwidth=1, relief='ridge')
+
+        #Teste
+        my_pic = ImageTk.PhotoImage(file="LogoFivros-Menu.png")
+        my_label = Label(self.fr_Principal, image=my_pic)
+        my_label.place(x=10, y=10, width=200, height=200)
 
 
         #Criação dos Frames Secundários
@@ -109,7 +116,6 @@ class TelaPrincipal:
             idCategoria = 17
             autor = Categoria().returnAutorCategoria(idCategoria)
 
-        print(idCategoria)
 
         # Criação da Aba Dentro aba
         self.fr_ApresentaAba.destroy()
@@ -188,7 +194,7 @@ class TelaPrincipal:
         btnAdicionar = Button(fr_Menu, text="Adicionar", command=lambda:Documento().createViewDocumento("Conteúdo", idUsuario=self.idUsuario))
         btnAlterar = Button(fr_Menu, text="Alterar", command=lambda:Documento().createViewAlteraDoc(self.app, self.idUsuario))
         btnExcluir = Button(fr_Menu, text="Excluir ", command=lambda:Documento().createViewDelete(self.app, self.idUsuario))
-        btnVisualizar = Button(fr_Menu, text="Visualização Completa", command=self.semAcao)
+        btnVisualizar = Button(fr_Menu, text="Visualização Completa", command=lambda:Documento().createViewVisualisar(self.app, self.idUsuario, 1))
         btnRelatorio = Button(fr_Menu, text="Gerar Relatório em PDF", command=self.semAcao)
         lblMenuTitulo = Label(fr_Menu, text="Fivros", anchor="center", font=("Arial", 16, "bold"))
 
