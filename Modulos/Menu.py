@@ -29,8 +29,8 @@ def criarMenu(app, idUsuario):
     menuConteudo.add_command(label="Alterar Conteúdo", command=lambda:Documento().createViewAlteraDoc(app=app, idUsuario=idUsuario))
     menuConteudo.add_command(label="Excluir Conteúdo", command=lambda:Documento().createViewDelete(app=app, idUsuario=idUsuario))
 
-    menuConteudo.add_separator()
-    menuConteudo.add_command(label="Gerar Relatório em PDF", command=semAcao)
+    #menuConteudo.add_separator()
+    #menuConteudo.add_command(label="Gerar Relatório em PDF", command=semAcao)
 
 #Criação do Menu de Ajuda
     menuSobre = Menu(barraMenu, tearoff=0)

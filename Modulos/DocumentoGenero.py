@@ -18,4 +18,4 @@ class DocumentoGenero:
         for idGenero in listaId:
             sqlInstrucao = "INSERT INTO DocumentoGenero(idDocumento, idGenero) values (?, ?);"
             sqlParametros = (idDocumento, idGenero)
-            dbManipulation(sqlInstrucao, sqlParametros)
+            dbInsert(sqlInstrucao, sqlParametros)

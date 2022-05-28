@@ -22,7 +22,7 @@ app.configure(background="#635959")
 #my_label.pack()
 #ImportacaoImagem.imageTest(app)
 
-app.update_idletasks()
+#app.update_idletasks()
 
 
 user = Usuario()

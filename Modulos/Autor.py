@@ -42,5 +42,5 @@ class Autor:
             else:
                 sqlInstrucao = "INSERT INTO Autor(nome, biografia, anoNascimento, anoFalescimento,paisOrigem) values (?, ?, ?, ?, ?);"
                 sqlParametros = (nome, biografia, anoNasc, anoFales, paisOrigem)
-                dbManipulation(sqlInstrucao, sqlParametros)
+                dbInsert(sqlInstrucao, sqlParametros)
                 self.addElementListBoxAutor(listBox)

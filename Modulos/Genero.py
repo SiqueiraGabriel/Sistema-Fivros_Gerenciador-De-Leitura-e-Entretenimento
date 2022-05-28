@@ -21,6 +21,15 @@ class Genero:
         if result != []:
             return  result[0][0]
 
+    def returnListGenero(self, idDocumento):
+        sql = f"SELECT g.nome from DocumentoGenero dg join Genero g on dg.idGenero = g.idGenero where dg.idDocumento = {idDocumento};"
+        result = dbSelect(sql)[0]
+        allGeneros = ""
+        for item in result:
+            allGeneros += f" {item};"
+        return f"{allGeneros}"
+
+
     def addElementsListBoxGenero(self, lbItens):
         """
         Adicionar os elementos no ListBox de Categoria
@@ -43,7 +52,7 @@ class Genero:
             else:
                 sqlInstrucao = "INSERT INTO Genero(nome) values (?);"
                 sqlParametro = [nome]
-                dbManipulation(sqlInstrucao, sqlParametro)
+                dbInsert(sqlInstrucao, sqlParametro)
                 messagebox.showinfo(title="Sucesso Cadastro Gênero.", message="Seu novo gênero foi cadastrado com sucesso.")
                 lbItens.update()
                 self.addElementsListBoxGenero(lbItens)

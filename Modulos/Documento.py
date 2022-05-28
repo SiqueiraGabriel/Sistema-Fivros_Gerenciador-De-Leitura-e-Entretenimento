@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk, messagebox
 from datetime import date
+
+import Modulos.Banco
 from Modulos.Autor import Autor
 from Modulos.DimensoesTela.DimensaoDocumento import *
 from Modulos.ClasseCategoria import *
@@ -436,73 +438,84 @@ class Documento:
 
 
 
-
-    def createViewVisualisar(self,app, idUsuario, idDocumento=0):
-
-
-
-        if idDocumento != 0:
-            appTelaVisu = Toplevel()
-            appTelaVisu.config(background="#ddd")
-            appTelaVisu.geometry("500x650")
-            appTelaVisu.resizable(0, 0)
-            appTelaVisu.transient(app)
-
-            #Criação dos elementos principais
-            fr_Principal = Frame(appTelaVisu, borderwidth=1, relief="raised")
-            fr_Cabecalho = Frame(fr_Principal)
-            fr_Sinopse = Frame(fr_Principal)
-            fr_Caracteristicas = Frame(fr_Principal)
-            fr_Observacao = Frame(fr_Principal)
-
-            #Itens do Frame Cabecalho
-            fr_Icone = Frame(fr_Cabecalho, borderwidth=1, relief="raised", background="#323232")
-            lblTitulo = Label(fr_Cabecalho, text="Título da Obra", anchor="center", font=("Arial", 12, "bold"))
-            lblDescricao = Label(fr_Cabecalho, text=f"Autor - Data Publicação", anchor="center", font=("Arial", 9))
-
-            #Itens do Frame Sinopse
-            txtSinopse = Label(fr_Sinopse, text="Sinopse", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
-            barraLateralSinopse = Scrollbar(fr_Sinopse)
-            lblSinopse = Text(fr_Sinopse, state="disabled", wrap=WORD, yscrollcommand=barraLateralSinopse.set, borderwidth=1, relief="raised")
-            barraLateralSinopse.config(command=lblSinopse.yview)
-
-            #Itens do Frame Caracteristicas
-            lblCategoria = Label(fr_Caracteristicas, text="Categoria", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
-            txtCategoria = Label(fr_Caracteristicas, text="Livro", background="#fff", borderwidth=1, relief="raised", anchor="center")
-            lblGenero = Label(fr_Caracteristicas, text="Gênero",  anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
-            txtGenero = Label(fr_Caracteristicas, text="Aventura, Ficção", background="#fff", borderwidth=1, relief="raised", anchor="center")
-            lblSituacao = Label(fr_Caracteristicas, text="Situação", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
-            txtSituacao = Label(fr_Caracteristicas, text="Finalizado", background="#fff", borderwidth=1, relief="raised", anchor="center")
+    def createViewVisualisar(self,app, idUsuario, idDocumento):
+        appTelaVisu = Toplevel()
+        appTelaVisu.config(background="#ddd")
+        appTelaVisu.geometry("500x650")
+        appTelaVisu.resizable(0, 0)
+        #appTelaVisu.transient(app)
 
 
-            #Itens do Frane Observações
-            barraLateralObservacao = Scrollbar(fr_Observacao, borderwidth=1, relief="solid")
-            txtObservacao = Label(fr_Observacao, text="Observações", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
-            lblObservacao = Text(fr_Observacao, state="disabled", wrap=WORD, yscrollcommand=barraLateralObservacao.set, borderwidth=1, relief="raised")
-            barraLateralObservacao.config(command=lblSinopse.yview)
+
+        #Criação dos elementos principais
+        fr_Principal = Frame(appTelaVisu, borderwidth=1, relief="raised")
+        fr_Cabecalho = Frame(fr_Principal)
+        fr_Sinopse = Frame(fr_Principal)
+        fr_Caracteristicas = Frame(fr_Principal)
+        fr_Observacao = Frame(fr_Principal)
+
+        #Busca das informações no BD
+        print(idDocumento)
+        sql = "SELECT d.titulo, a.nome, d.anoPublicacao,d.descricao, d.observacoes, d.idCategoria, d.situacao from Documento d " \
+              "inner join Autor a " \
+                    "on d.idAutor = a.idAutor " \
+              f"where d.idDocumento = {idDocumento};"
+
+        result = (dbSelect(sql))[0]
+        print(result[0])
+
+        #Itens do Frame Cabecalho
+        fr_Icone = Frame(fr_Cabecalho, borderwidth=1, relief="raised", background="#323232")
+        lblTitulo = Label(fr_Cabecalho, text=result[0], anchor="center", font=("Arial", 12, "bold"))
+        lblDescricao = Label(fr_Cabecalho, text=f"{result[1]} - {result[2]}", anchor="center", font=("Arial", 9))
+
+        #Itens do Frame Sinopse
+        txtSinopse = Label(fr_Sinopse, text="Sinopse", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
+        barraLateralSinopse = Scrollbar(fr_Sinopse)
+        lblSinopse = Text(fr_Sinopse, wrap=WORD, yscrollcommand=barraLateralSinopse.set, borderwidth=1, relief="raised")
+        lblSinopse.insert(1.0, result[3])
+        lblSinopse.configure(state=DISABLED)
+        barraLateralSinopse.config(command=lblSinopse.yview)
+
+        #Itens do Frame Caracteristicas
+        lblCategoria = Label(fr_Caracteristicas, text="Categoria", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
+        txtCategoria = Label(fr_Caracteristicas, text=Categoria().returnNomeCategoria(result[5]), background="#fff", borderwidth=1, relief="raised", anchor="center")
+        lblGenero = Label(fr_Caracteristicas, text="Gênero",  anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
+        txtGenero = Label(fr_Caracteristicas, text=Genero().returnListGenero(idDocumento), background="#fff", borderwidth=1, relief="raised", anchor="center")
+        lblSituacao = Label(fr_Caracteristicas, text="Situação", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
+        txtSituacao = Label(fr_Caracteristicas, text=result[6], background="#fff", borderwidth=1, relief="raised", anchor="center")
 
 
-            fr_Principal.place(x=10, y=10, width=480, height=630)
-            #------------------------------------------------------
-            fr_Cabecalho.place(x=0, y=10, width=460, height=180)
-            fr_Icone.place(x=180, y=0, width=100, height=120)
-            lblTitulo.place(x=0, y=130, width=460, height=20)
-            lblDescricao.place(x=0, y=160, width=460, height=20)
-            #------------------------------------------------------
-            fr_Sinopse.place(x=10, y=200, width=440, height=120)
-            txtSinopse.place(x=0, y=0, width=440, height=20)
-            lblSinopse.place(x=0, y=20, width=420, height=100)
-            barraLateralSinopse.pack(fill=Y, side="right", pady=20)
-            #----------------------------------------------
-            fr_Caracteristicas.place(x=10, y=350, width=440, height=100)
-            lblCategoria.place(x=0, y=0, width=210, height=20)
-            txtCategoria.place(x=0, y=20, width=210, height=30)
-            lblGenero.place(x=220, y=0, width=220, height=20)
-            txtGenero.place(x=220, y=20, width=220, height=30)
-            lblSituacao.place(x=0, y=60, width=440, height=20)
-            txtSituacao.place(x=0, y=80, width=440, height=20)
-            #------------------------------------------------------
-            fr_Observacao.place(x=10, y=470, width=440, height=120)
-            txtObservacao.place(x=0, y=0, width=440, height=20)
-            lblObservacao.place(x=0, y=20, width=420, height=100)
-            barraLateralObservacao.pack(fill=Y, side="right", pady=20)
+        #Itens do Frane Observações
+        barraLateralObservacao = Scrollbar(fr_Observacao, borderwidth=1, relief="solid")
+        txtObservacao = Label(fr_Observacao, text="Observações", anchor="w", background="#635959", font=("Arial", 10),foreground="#f6f6f6")
+        lblObservacao = Text(fr_Observacao, wrap=WORD, yscrollcommand=barraLateralObservacao.set, borderwidth=1, relief="raised")
+        lblObservacao.insert(1.0, result[4])
+        lblObservacao.configure(state=DISABLED)
+        barraLateralObservacao.config(command=lblSinopse.yview)
+
+
+        fr_Principal.place(x=10, y=10, width=480, height=630)
+        #------------------------------------------------------
+        fr_Cabecalho.place(x=0, y=10, width=460, height=180)
+        fr_Icone.place(x=180, y=0, width=100, height=120)
+        lblTitulo.place(x=0, y=130, width=460, height=20)
+        lblDescricao.place(x=0, y=160, width=460, height=20)
+        #------------------------------------------------------
+        fr_Sinopse.place(x=10, y=200, width=440, height=120)
+        txtSinopse.place(x=0, y=0, width=440, height=20)
+        lblSinopse.place(x=0, y=20, width=420, height=100)
+        barraLateralSinopse.pack(fill=Y, side="right", pady=20)
+        #----------------------------------------------
+        fr_Caracteristicas.place(x=10, y=350, width=440, height=100)
+        lblCategoria.place(x=0, y=0, width=210, height=20)
+        txtCategoria.place(x=0, y=20, width=210, height=30)
+        lblGenero.place(x=220, y=0, width=220, height=20)
+        txtGenero.place(x=220, y=20, width=220, height=30)
+        lblSituacao.place(x=0, y=60, width=440, height=20)
+        txtSituacao.place(x=0, y=80, width=440, height=20)
+        #------------------------------------------------------
+        fr_Observacao.place(x=10, y=470, width=440, height=120)
+        txtObservacao.place(x=0, y=0, width=440, height=20)
+        lblObservacao.place(x=0, y=20, width=420, height=100)
+        barraLateralObservacao.pack(fill=Y, side="right", pady=20)

@@ -25,6 +25,11 @@ class Categoria:
         for item in result:
             return item[0]
 
+    def returnNomeCategoria(self, idCategoria):
+        sql = f"SELECT nome from Categoria where idCAtegoria = {idCategoria};"
+        result = dbSelect(sql)
+        return result[0]
+
 
     def addElementListBoxCadastroDoc(self, listbox=""):
         """
@@ -47,7 +52,7 @@ class Categoria:
             else:
                 sqlInstrucao = "INSERT INTO Categoria(nome, individuoResponsavel) values (?, ?);"
                 sqlParametros = (nome, individuoResponsavel)
-                dbManipulation(sqlInstrucao, sqlParametros)
+                dbInsert(sqlInstrucao, sqlParametros)
                 messagebox.showinfo(title="Sucesso Cadastro de Categoria", message="Sua nova categoria foi cadastrada com sucesso")
                 self.addElementListBoxCadastroDoc(lb_itens)
 

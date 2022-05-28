@@ -19,6 +19,7 @@ class TelaPrincipal:
 
     def criar(self, app, idUsuario):
         self.idUsuario = idUsuario
+        self.app = app
         framePrincipal = Frame(app)
         Modulos.Menu.criarMenu(app, idUsuario=idUsuario)
         framePrincipal.place(x=10, y=30, width=1340, height=670)
@@ -47,7 +48,7 @@ class TelaPrincipal:
 
         #Adição do Menu Lateral
         self.btnAbrirMenu = Button(self.fr_Conteudo, text="|||", background="#8C1018", foreground="#fff", command=self.abrirMenu)
-        self.addMenuLateral(self.fr_Menu)
+        #self.addMenuLateral(self.fr_Menu)
 
         #Criação do Topo da Página
         self.criarTopoPagina()
@@ -86,6 +87,7 @@ class TelaPrincipal:
             tv = ttk.Treeview(fr_Responsavel, columns=('id','nome','autor','genero'), show="headings")
             tv.column('genero', minwidth=300, width=400)
 
+        btnAbrir = Button(fr_Responsavel, text="Ver", command=lambda:self.ver(tv)).pack()
 
         tv.column('id', minwidth=0, width=0)
         tv.column('nome', minwidth=150, width=500)
@@ -101,9 +103,15 @@ class TelaPrincipal:
         self.insertValuesOfCategoria(tv, idCategoria, status)
 
 
+    def ver(self, tv):
+        try:
+            items = tv.selection()[0]
+            idDocument = (tv.item(items, "values"))[0]
+            Documento().createViewVisualisar(self.app, self.idUsuario, idDocument)
+        except:
+            messagebox.showerror(title="ERRO", message="Por favor, selecione o item que deseja visualizar")
+
     def addAppCategoriaSituacao(self):
-
-
 
         #Valor após escolher a Categoria
         if self.varCategoria.get() != []:
@@ -194,12 +202,12 @@ class TelaPrincipal:
         btnAdicionar = Button(fr_Menu, text="Adicionar", command=lambda:Documento().createViewDocumento("Conteúdo", idUsuario=self.idUsuario))
         btnAlterar = Button(fr_Menu, text="Alterar", command=lambda:Documento().createViewAlteraDoc(self.app, self.idUsuario))
         btnExcluir = Button(fr_Menu, text="Excluir ", command=lambda:Documento().createViewDelete(self.app, self.idUsuario))
-        btnVisualizar = Button(fr_Menu, text="Visualização Completa", command=lambda:Documento().createViewVisualisar(self.app, self.idUsuario, 1))
-        btnRelatorio = Button(fr_Menu, text="Gerar Relatório em PDF", command=self.semAcao)
+        self.btnVisualizar = Button(fr_Menu)
+       # btnRelatorio = Button(fr_Menu, text="Gerar Relatório em PDF", command=self.semAcao)
         lblMenuTitulo = Label(fr_Menu, text="Fivros", anchor="center", font=("Arial", 16, "bold"))
 
         #Configuração das dimensões
-        DimeElementMenuLateral(self.btnFecharMenu, lblMenuTitulo, btnAdicionar, btnAlterar, btnExcluir, btnVisualizar, btnRelatorio)
+        DimeElementMenuLateral(self.btnFecharMenu, lblMenuTitulo, btnAdicionar, btnAlterar, btnExcluir, self.btnVisualizar)
 
 
     def abrirMenu(self):
