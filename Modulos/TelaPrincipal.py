@@ -48,7 +48,7 @@ class TelaPrincipal:
 
         #Adição do Menu Lateral
         self.btnAbrirMenu = Button(self.fr_Conteudo, text="|||", background="#8C1018", foreground="#fff", command=self.abrirMenu)
-        #self.addMenuLateral(self.fr_Menu)
+        self.addMenuLateral(self.fr_Menu)
 
         #Criação do Topo da Página
         self.criarTopoPagina()
@@ -87,7 +87,10 @@ class TelaPrincipal:
             tv = ttk.Treeview(fr_Responsavel, columns=('id','nome','autor','genero'), show="headings")
             tv.column('genero', minwidth=300, width=400)
 
-        btnAbrir = Button(fr_Responsavel, text="Ver", command=lambda:self.ver(tv)).pack()
+        self.addMenuLateral(self.fr_Menu, tv)
+
+        btnAbrir = Button(fr_Responsavel, text="Ver", command=lambda:self.ver(tv, 1)).pack()
+        btnExcluir = Button(fr_Responsavel, text="Excluir", command=lambda:self.ver(tv, 2)).pack()
 
         tv.column('id', minwidth=0, width=0)
         tv.column('nome', minwidth=150, width=500)
@@ -103,11 +106,20 @@ class TelaPrincipal:
         self.insertValuesOfCategoria(tv, idCategoria, status)
 
 
-    def ver(self, tv):
+    def ver(self, tv, opcao):
+        """
+
+        :param tv:
+        :param opcao: identificar a tela a qual será aberta - 1: Visualizacao, 2: Exclusao, 3: Alteração
+        :return:
+        """
         try:
             items = tv.selection()[0]
             idDocument = (tv.item(items, "values"))[0]
-            Documento().createViewVisualisar(self.app, self.idUsuario, idDocument)
+            if opcao == 1:
+                Documento().createViewVisualisar(self.app, self.idUsuario, idDocument)
+            elif opcao == 2:
+                Documento().createViewDelete(self.app, self.idUsuario, idDocument)
         except:
             messagebox.showerror(title="ERRO", message="Por favor, selecione o item que deseja visualizar")
 
@@ -196,7 +208,8 @@ class TelaPrincipal:
             abaCategoria.insert("", 'end', values=(item[0],item[1], item[2], listaGenero, item[3]))
 
         
-    def addMenuLateral(self, fr_Menu):
+    def addMenuLateral(self, fr_Menu, tv=""):
+        print(tv)
         #Adição dos elementos
         self.btnFecharMenu = Button(fr_Menu, text="|||", background="#8C1018", foreground="#fff", command=self.fecharMenu)
         btnAdicionar = Button(fr_Menu, text="Adicionar", command=lambda:Documento().createViewDocumento("Conteúdo", idUsuario=self.idUsuario))

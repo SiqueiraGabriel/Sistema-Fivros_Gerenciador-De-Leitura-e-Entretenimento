@@ -416,6 +416,7 @@ class Documento:
         fr_Principal = Frame(self.appDeleteDoc)
         txtTitulo = Label(fr_Principal, text="EXCLUSÃO DE CONTEÚDO", anchor="center", font=("Arial", 14))
 
+
         # Consulta no DB, todos Documento
         listaDocumento = []
         sql = f"SELECT titulo from Documento where idUsuario = '{self.idUsuario}' and situacao != 'Lixeira'"

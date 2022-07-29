@@ -9,7 +9,7 @@ def DimeElemetCriacaoAbas(fr_Conteudo, fr_Menu, fr_VisualizarCategoria, lblCateg
     titulo.place(x=10, y=0, width=400, height=120)
 
 
-def DimeElementMenuLateral(btnFecharMenu, lblMenuTitulo, btnAdicionar, btnAlterar, btnExcluir, ):
+def DimeElementMenuLateral(btnFecharMenu, lblMenuTitulo, btnAdicionar, btnAlterar, btnExcluir, btnVisualizar):
     btnFecharMenu.place(y=10, x=10, width=30, height=30)
     lblMenuTitulo.place(y=10, x=60, width=180, height=30)
     btnAdicionar.place(y=90, x=10, width=240, height=30)
