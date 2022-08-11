@@ -1,5 +1,5 @@
-from tkcalendar import *
 from tkinter import *
+from tkcalendar2 import *
 
 class Calendario:
 

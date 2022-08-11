@@ -1,4 +1,4 @@
-from PIL import ImageTk, Image
+#from PIL import ImageTk, Image
 
 from Modulos.ClasseCategoria import *
 import os.path
@@ -34,9 +34,9 @@ class TelaPrincipal:
         self.fr_Principal = Frame(aba, borderwidth=1, relief='ridge')
 
         #Teste
-        my_pic = ImageTk.PhotoImage(file="LogoFivros-Menu.png")
-        my_label = Label(self.fr_Principal, image=my_pic)
-        my_label.place(x=10, y=10, width=200, height=200)
+        # my_pic = ImageTk.PhotoImage(file="LogoFivros-Menu.png")
+        # my_label = Label(self.fr_Principal, image=my_pic)
+        # my_label.place(x=10, y=10, width=200, height=200)
 
 
         #Criação dos Frames Secundários

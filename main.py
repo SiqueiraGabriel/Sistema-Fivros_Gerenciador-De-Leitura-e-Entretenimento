@@ -4,7 +4,7 @@ from Modulos.ClasseCategoria import Categoria
 from Modulos.TelaPrincipal import *
 from Modulos.Banco import *
 from sqlite3 import *
-from PIL import ImageTk, Image
+#from PIL import ImageTk, Image
 
 
 caminho = os.path.dirname(__file__)
